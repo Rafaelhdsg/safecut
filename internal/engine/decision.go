@@ -9,6 +9,14 @@ type Recommendation struct {
 	Reason       string
 	Risk         RiskLevel
 	MonthlySave  float64
+	Analysis     *IdleAnalysis
+
+	// AutoExecute is false when the resource's policy blocks automated action
+	// (protect mode, external dependencies, or high criticality).
+	AutoExecute bool
+
+	// PolicyNote explains why auto-execution is blocked, if applicable.
+	PolicyNote string
 }
 
 type RiskLevel int

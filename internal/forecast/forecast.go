@@ -1,6 +1,6 @@
 package forecast
 
-import "github.com/Rafaelhdsg/inframind-cli/internal/engine"
+import "github.com/Rafaelhdsg/inframind-cli/internal/simulation"
 
 // Projection holds cost-saving projections over a time period.
 type Projection struct {
@@ -11,7 +11,7 @@ type Projection struct {
 }
 
 // Calculate produces a savings projection based on simulation results.
-func Calculate(result engine.SimulationResult, months int) Projection {
+func Calculate(result simulation.Result, months int) Projection {
 	monthly := result.TotalSaving
 	total := monthly * float64(months)
 

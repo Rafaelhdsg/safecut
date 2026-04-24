@@ -19,6 +19,16 @@ INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 PIN_VERSION="${INFRAMIND_VERSION:-}"
 SKIP_VERIFY="${INFRAMIND_SKIP_VERIFY:-0}"
 
+# TMP_DIR must be declared at the top-level so the EXIT trap (registered
+# after mktemp) can reference it without tripping `set -u`. Bash traps
+# fire on shell exit, outside any function scope, so a `local` inside
+# main() would be unset by the time the trap runs.
+TMP_DIR=""
+cleanup() {
+  [[ -n "${TMP_DIR:-}" && -d "${TMP_DIR}" ]] && rm -rf "${TMP_DIR}"
+}
+trap cleanup EXIT
+
 log()  { printf '  %s\n' "$*"; }
 err()  { printf '  ERROR: %s\n' "$*" >&2; }
 die()  { err "$*"; exit 1; }
@@ -80,7 +90,7 @@ main() {
   require_cmd curl
   require_cmd tar
 
-  local os arch version url tmp archive
+  local os arch version url archive
   os=$(detect_os)
   arch=$(detect_arch)
 
@@ -89,9 +99,8 @@ main() {
   log "Installing InfraMind v${version}…"
 
   url="https://github.com/${REPO}/releases/download/v${version}/${BINARY}_${version}_${os}_${arch}.tar.gz"
-  tmp=$(mktemp -d)
-  trap 'rm -rf "$tmp"' EXIT
-  archive="${tmp}/${BINARY}.tar.gz"
+  TMP_DIR=$(mktemp -d)
+  archive="${TMP_DIR}/${BINARY}.tar.gz"
 
   if ! curl -fsSL "$url" -o "$archive"; then
     err "failed to download ${url}"
@@ -99,16 +108,16 @@ main() {
     exit 1
   fi
 
-  verify_checksum "$tmp" "$archive" "$version" "$os" "$arch"
+  verify_checksum "$TMP_DIR" "$archive" "$version" "$os" "$arch"
 
-  tar -xzf "$archive" -C "$tmp"
-  [[ -f "${tmp}/${BINARY}" ]] || die "archive did not contain the expected binary at /${BINARY}"
+  tar -xzf "$archive" -C "$TMP_DIR"
+  [[ -f "${TMP_DIR}/${BINARY}" ]] || die "archive did not contain the expected binary at /${BINARY}"
 
   if [[ -w "$INSTALL_DIR" ]]; then
-    install -m 0755 "${tmp}/${BINARY}" "${INSTALL_DIR}/${BINARY}"
+    install -m 0755 "${TMP_DIR}/${BINARY}" "${INSTALL_DIR}/${BINARY}"
   else
     log "Elevating with sudo to write to ${INSTALL_DIR}"
-    sudo install -m 0755 "${tmp}/${BINARY}" "${INSTALL_DIR}/${BINARY}"
+    sudo install -m 0755 "${TMP_DIR}/${BINARY}" "${INSTALL_DIR}/${BINARY}"
   fi
 
   log ""

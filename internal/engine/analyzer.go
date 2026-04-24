@@ -13,6 +13,7 @@ type MetricInput struct {
 	CPUAvgPercent  float64
 	NetworkIn      float64
 	NetworkOut     float64
+	DiskReadBytes  float64
 	DiskWriteBytes float64
 	LastActive     time.Time
 }
@@ -37,19 +38,28 @@ func DefaultSignalWeights() SignalWeights {
 	}
 }
 
+// IdleCPUThresholdPercent is the single source of truth for "CPU
+// counts as idle below this percentage". Used by both the analyzer
+// (to classify signals) and the metrics layer (to count idle days).
+// Previously the two used 5% and 2% respectively, which meant the
+// "idle days" figure was up to 3pp looser than the engine's own
+// definition of idle — rare in practice but a classic source of
+// "why does it say 12/14 idle but the analysis says active?".
+const IdleCPUThresholdPercent = 5.0
+
 // IdleThresholds controls what "idle" means for each signal.
 // Values below the threshold are considered inactive.
 type IdleThresholds struct {
-	CPUPercent     float64       `json:"cpu_percent"`
-	NetworkBytesIn float64       `json:"network_bytes_in"`
-	NetworkBytesOut float64      `json:"network_bytes_out"`
-	DiskWriteBytes float64       `json:"disk_write_bytes"`
-	MinObservation time.Duration `json:"min_observation"`
+	CPUPercent      float64       `json:"cpu_percent"`
+	NetworkBytesIn  float64       `json:"network_bytes_in"`
+	NetworkBytesOut float64       `json:"network_bytes_out"`
+	DiskWriteBytes  float64       `json:"disk_write_bytes"`
+	MinObservation  time.Duration `json:"min_observation"`
 }
 
 func DefaultIdleThresholds() IdleThresholds {
 	return IdleThresholds{
-		CPUPercent:      5.0,
+		CPUPercent:      IdleCPUThresholdPercent,
 		NetworkBytesIn:  1024,
 		NetworkBytesOut: 1024,
 		DiskWriteBytes:  1024,
@@ -112,26 +122,21 @@ func DefaultAnalyzer() *Analyzer {
 	return NewAnalyzer(DefaultIdleThresholds(), DefaultSignalWeights())
 }
 
-// Analyze evaluates raw metrics and produces an IdleAnalysis with
-// a composite score, confidence rating, and per-signal breakdown.
-//
-// Uses weighted geometric mean: if ANY signal is active (score ≈ 0),
-// the composite collapses — preventing false "idle" classifications
-// from noisy single-dimension checks like CPU alone.
-func (a *Analyzer) Analyze(input MetricInput, observedFor time.Duration) IdleAnalysis {
-	return a.AnalyzeWithPolicy(input, observedFor, DefaultPolicy())
-}
-
 // AnalyzeWithPolicy evaluates metrics with policy-aware adjustments:
 //   - Criticality shifts idle thresholds (high = stricter, low = more aggressive)
 //   - External dependencies reduce confidence (incomplete visibility)
 func (a *Analyzer) AnalyzeWithPolicy(input MetricInput, observedFor time.Duration, policy ResourcePolicy) IdleAnalysis {
 	thresholdMult := policy.ThresholdMultiplier()
+	// Combined disk I/O = reads + writes. Reads are important
+	// (healthy database replicas, query-only workloads, OS paging)
+	// and the old code dropped them, which caused read-heavy VMs to
+	// score as "silent disk" and inflate the idle score.
+	diskIO := input.DiskReadBytes + input.DiskWriteBytes
 	signals := []SignalResult{
 		a.evaluateSignal("cpu", input.CPUAvgPercent, a.thresholds.CPUPercent*thresholdMult, a.weights.CPU),
 		a.evaluateSignal("network_in", input.NetworkIn, a.thresholds.NetworkBytesIn*thresholdMult, a.weights.NetworkIn),
 		a.evaluateSignal("network_out", input.NetworkOut, a.thresholds.NetworkBytesOut*thresholdMult, a.weights.NetworkOut),
-		a.evaluateSignal("disk_write", input.DiskWriteBytes, a.thresholds.DiskWriteBytes*thresholdMult, a.weights.DiskWrite),
+		a.evaluateSignal("disk_io", diskIO, a.thresholds.DiskWriteBytes*thresholdMult, a.weights.DiskWrite),
 	}
 
 	scores := make([]float64, len(signals))
@@ -204,26 +209,13 @@ func weightedGeometricMean(scores, weights []float64) float64 {
 }
 
 func (a *Analyzer) computeConfidence(input MetricInput, observed time.Duration) float64 {
-	timeFactor := 0.0
-	if a.thresholds.MinObservation > 0 {
-		timeFactor = math.Min(float64(observed)/float64(a.thresholds.MinObservation), 1.0)
+	if observed <= 0 {
+		return 0
 	}
 
-	populated := 0
-	total := 4
-	if input.CPUAvgPercent > 0 || !input.LastActive.IsZero() {
-		populated++
-	}
-	if input.NetworkIn >= 0 {
-		populated++
-	}
-	if input.NetworkOut >= 0 {
-		populated++
-	}
-	if input.DiskWriteBytes >= 0 {
-		populated++
-	}
-	dataFactor := float64(populated) / float64(total)
-
-	return timeFactor * dataFactor
+	// Confidence scales linearly with observation window length.
+	// 7+ days of data → maximum confidence.
+	// Zero metric values from a real monitoring source are genuine
+	// readings (the resource IS idle), not missing data.
+	return math.Min(float64(observed)/float64(a.thresholds.MinObservation), 1.0)
 }

@@ -1,145 +1,317 @@
 # InfraMind CLI
 
-Decision engine for cloud infrastructure. Analyze, simulate, and optimize costs with safety and explainability.
+**Decision engine for cloud infrastructure — read-only, safe, explainable.**
+Find idle resources, simulate changes safely, and stop paying for what you're not using.
 
-## Architecture
+> One command. Real savings. Nothing is modified. Ever. Runtime scales with subscription size (often under a minute; large tenants can take several minutes). Use `--resource-group` to scope one RG for faster runs.
 
-InfraMind operates as a layered pipeline:
+---
 
-```
-Discovery → Policy Resolution (with inheritance) → Graph → Analysis → Decision → Simulation → Forecast
-```
+## Try it in 30 seconds
 
-| Layer | Package | Purpose |
-|-------|---------|---------|
-| Discovery | `internal/discovery/` | Collects raw resources and metrics from cloud providers |
-| Governance | `internal/engine/policy.go` + `safelock.go` | Resolves policies with inheritance, templates, and drift detection |
-| Dependency Graph | `internal/graph/` | Maps relationships (IP → NIC → VM → Disk) |
-| Analysis | `internal/engine/analyzer.go` | Computes idle scores from correlated signals |
-| Decision Engine | `internal/engine/` + `internal/rules/` | Applies rules and generates recommendations |
-| Simulation Engine | `internal/simulation/` | Predicts impact and checks dependency safety |
-| Forecast Engine | `internal/forecast/` | Projects savings and ROI |
-
-## Project Structure
-
-```
-inframind-cli/
-├── cmd/
-│   ├── inframind/              # Main binary entry point
-│   │   └── main.go
-│   ├── root.go                 # Cobra root command
-│   ├── scan.go                 # 'inframind scan'
-│   ├── simulate.go             # 'inframind simulate'
-│   ├── forecast.go             # 'inframind forecast'
-│   └── policy.go              # 'inframind policy simulate'
-├── internal/
-│   ├── discovery/              # Layer 1 — Resource & metrics collection
-│   │   ├── collector.go
-│   │   └── metrics.go
-│   ├── graph/                  # Layer 2 — Dependency graph engine
-│   │   └── mapper.go
-│   ├── engine/                 # Layer 3 — Decision engine (core)
-│   │   ├── analyzer.go
-│   │   ├── decision.go
-│   │   ├── policy.go
-│   │   └── safelock.go
-│   ├── simulation/             # Layer 4 — Simulation engine (differentiator)
-│   │   └── simulation.go
-│   ├── forecast/               # Layer 5 — Cost savings & ROI
-│   │   └── forecast.go
-│   │   └── policy_simulator.go
-│   ├── rules/                  # Pluggable rules for the decision engine
-│   │   ├── rule.go
-│   │   ├── orphan_disk.go
-│   │   └── idle_resource.go
-│   ├── providers/              # Cloud provider adapters
-│   │   ├── azure/
-│   │   └── provider.go
-│   ├── pipeline/               # Orchestrates all layers
-│   │   ├── pipeline.go
-│   │   └── policy_sim.go
-│   └── store/                  # Persistence (history, future dashboard)
-│       └── store.go
-├── pkg/
-│   └── report/                 # Output formatting (JSON, Table, ASCII)
-│       ├── report.go
-│       └── policy_sim.go
-├── go.mod
-└── README.md
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Go 1.23+
-
-### Build
+**Prerequisite:** an authenticated Azure session. Either run `az login`
+(simplest) or export `AZURE_SUBSCRIPTION_ID` (or `ARM_SUBSCRIPTION_ID`).
+Run `inframind doctor` first if unsure — it validates the credential
+chain and pricing cache before any scan.
 
 ```bash
-go build -o inframind ./cmd/inframind
+brew install Rafaelhdsg/tap/inframind
 ```
 
-### Usage
+or
 
 ```bash
-# Scan infrastructure for optimization opportunities
-inframind scan --subscription <SUBSCRIPTION_ID>
+curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/inframind-cli/main/install.sh | bash
+```
 
-# Simulate the impact of proposed changes
-inframind simulate --dry-run
+Then:
 
-# Forecast cost savings
-inframind forecast --months 12
+```bash
+az login                     # or: export AZURE_SUBSCRIPTION_ID=<id>
+inframind doctor             # optional: verify environment is ready
+inframind quick-scan
+```
 
-# Simulate a policy change before applying (blast radius analysis)
+That's it. No config files, no setup scripts, no flags. 100% read-only —
+nothing is ever modified on your Azure subscription.
+
+---
+
+## Pricing
+
+The CLI is **free forever** for read-only scans, policy simulate, policy
+lint, history, and RI / rightsize suggestions — all shipping today.
+InfraMind Cloud (automation, scheduled scans, Slack alerts, white-label
+reports, SSO) ships with **v1.1**. Founding customers on the waitlist
+lock in today's price for the lifetime of their subscription.
+
+| Plan            | Price                                        | Status         | Who it's for                                       |
+|-----------------|----------------------------------------------|----------------|----------------------------------------------------|
+| **CLI Free**    | $0 forever · 1 sub · 7-day history            | **ships today**| Individual operators exploring a single sub        |
+| **Solo**        | $29/mo                                        | **v1.1 waitlist** | Freelancer / single-sub CTO — 3 subs, auto-apply |
+| **Team**        | $199/mo · up to 10 seats                      | **v1.1 waitlist** | Startup / scale-up — Slack alerts, SSO           |
+| **Enterprise**  | from $799/mo **or 8% of verified savings**    | **v1.1 waitlist** | Mid-market / regulated — SAML (in design), audit |
+| **Partner/MSP** | 20% recurring revshare                        | **v1.1 waitlist** | MSPs / consultants managing 2+ clients           |
+
+Full pricing and FAQ: [inframind.io/pricing](https://inframind.io/pricing)
+or run `inframind upgrade` for the in-terminal table.
+
+Optional:
+
+```bash
+inframind quick-scan --resource-group <name>   # faster: one resource group only
+inframind quick-scan -o json --progress        # JSON on stdout; stage lines on stderr
+```
+
+### What you'll see
+
+> This is real output from a live Azure subscription — not a mock.
+
+<details>
+<summary>Text output (click to expand)</summary>
+
+```
+  [DISCOVERY]  Scanning subscription a1b2c3d4...       Done. 96 resources found
+  [PRICING]    Loading Azure Retail Prices...........   Done. 5 regions, all real-time
+  [GRAPH]      Building dependency tree..............   Done. 42 linked, 54 isolated
+  [ENGINE]     Analyzing 14-day telemetry signals....   Done. 38 idle detected
+  [SAFETY]     Simulating blast radius...............   Done. 2 risks found
+  [FORECAST]   Projecting 12-month savings...........   Done. $4,212/yr recoverable
+
+  ─── DASHBOARD ──────────────────────────────────────────────
+
+  +----------------------------------------------------------+
+  |  INFRAMIND  |  $4,212/yr waste across 3 RGs — 95% safe   |
+  +----------------------------------------------------------+
+  |  ANNUAL SAVINGS    $4,212 / yr                           |
+  |  SAFETY SCORE      36/38 safe  [HIGH CONFIDENCE]         |
+  |  AUTO-EXECUTE      28 actions ready to automate          |
+  +----------------------------------------------------------+
+
+  ─── TARGETS ────────────────────────────────────────────────
+
+  TOP TARGETS
+
+  1. 🖥️  self-host-agent-vm (VM)                           STOP
+     ├─ SIGNALS:  Ghost VM — zero activity across all signals for 14 days
+     ├─ BLAST:    Standalone VM — no attached resources depend on it
+     └─ SAVING:   $70.08/mo  ($2.34/day burning idle)
+
+  2. 🌐 12 public IPs                                 DEALLOCATE
+     ├─ PATTERN:  All from NAT gateways — leftover from deployments
+     ├─ BLAST:    All orphaned. No NICs reference these IPs.
+     └─ SAVING:   $43.80/mo  ($1.46/day wasted)
+
+  3. 💾 19 unattached disks                               DELETE
+     ├─ PATTERN:  Disks in "Unattached" state with no VM reference
+     ├─ BLAST:    All detached. No VMs depend on these disks.
+     └─ SAVING:   $189.24/mo  ($6.31/day wasted)
+
+  🔒  Full SIGNALS + BLAST analysis for 4 more targets (23 resources)
+     →  InfraMind Cloud  https://inframind.io/#waitlist
+
+  ─── INSIGHT ────────────────────────────────────────────────
+
+  [!] WASTE HOTSPOT DETECTED
+  68% of recoverable cost is concentrated in resource group
+  'lab-testing'. Apply the 'development' policy template.
+
+  ──────────────────────────────────────────────────────────────
+  NEXT  inframind policy simulate --resource-group <rg>  what-if analysis
+
+  🔒 Full evidence report for all 96 resources, exportable
+  dashboards & Slack alerts → InfraMind Cloud  https://inframind.io/#waitlist
+
+  ROI SNAPSHOT
+  ============
+  → $351.00/mo identified in safe recommendations.
+  • Pay Cloud $29/mo  →  $322.00 net savings/mo (11x ROI)
+  • Automate 23 recommendation(s) in one click  →  inframind upgrade --start-trial solo
+  • Managing 3 resource groups / clients?  →  inframind upgrade --partner
+  • Enterprise alternative: pay 8% of verified savings (greater applies).  inframind upgrade --book-demo
+```
+
+</details>
+
+---
+
+## Command flow
+
+```
+quick-scan  →  policy simulate  →  apply [Cloud]
+ (discover)      (what-if)          (automate)
+```
+
+### `inframind quick-scan`
+
+Zero-config instant scan. Scans 10 Azure resource types (canonical list: [`internal/defaults/defaults.go`](internal/defaults/defaults.go)) across your subscription.
+
+```bash
+inframind quick-scan
+inframind quick-scan --subscription <ID>
+inframind quick-scan --resource-group <name>
+inframind quick-scan --export report.md
+inframind quick-scan -o json
+inframind quick-scan -o json --progress
+```
+
+### `inframind policy simulate`
+
+What-if analysis: see the blast radius of a policy change before applying it.
+
+```bash
 inframind policy simulate --resource-group prod-sap --set criticality=high
-inframind policy simulate --subscription my-sub --set mode=protect --set external=true
-inframind policy simulate --resource-group dev-test --set template=development
+inframind policy simulate --resource-group prod-sap --set mode=protect --export report.html
 ```
 
-## Resource Governance Tags
+### `inframind policy lint`
 
-InfraMind reads Azure resource tags to understand business context and governance constraints. Three independent tag dimensions control how each resource is treated.
+Fast metadata-only validation of `inframind-*` governance tags. Runs
+discovery + policy resolution but skips metrics, rules, and simulation,
+so it's cheap enough to gate in CI. Flags unsupported tag values and
+drift between resource-level tags and their RG / subscription parent.
 
-### 1. Mode (`inframind-mode`)
+```bash
+inframind policy lint
+inframind policy lint --resource-group prod-sap
+inframind policy lint -o json
+```
 
-Controls **what InfraMind is allowed to do** with the resource.
+### `inframind history`
 
-| Value | Analyzed? | Recommendations? | Auto-Execute? | Use Case |
-|-------|-----------|-------------------|---------------|----------|
-| *(no tag)* | Yes | Yes | Yes | Default — full pipeline |
-| `observe` | Yes | No | No | Monitor without acting (new resources, evaluation period) |
-| `protect` | Yes | Yes | **No** | Show recommendations, but require manual approval |
-| `ignore` | No | No | No | Completely invisible to InfraMind |
+Prints a compact table of local scan records for a subscription (7-day
+local window). Useful for smoke-testing that scans are persisting and
+spotting short-term trends without re-hitting Azure.
 
-Legacy tags `inframind-ignore` and `inframind-lock` with truthy values map to `ignore` mode.
+```bash
+inframind history
+inframind history --subscription <ID>
+inframind history -o json
+```
 
-### 2. Criticality (`inframind-criticality`)
+> Long-window trends (30 / 60 / 90 days) and anomaly alerting ship with
+> InfraMind Cloud.
 
-Declares **how important** the resource is. Directly affects analysis behavior.
+### `inframind apply` [Cloud]
 
-| Value | Idle Thresholds | Risk Adjustment | Auto-Execute? |
-|-------|-----------------|-----------------|---------------|
-| `high` | 2x stricter (needs stronger evidence) | +1 level | **Blocked** |
+Runs the same full read-only scan as `quick-scan` and lists every
+recommendation that is safe to auto-execute. **In v1.0 the CLI does
+not mutate Azure** — actual execution, rollback windows, and audit
+trail ship with InfraMind Cloud (Solo tier and above). The CLI
+output makes the split explicit so you never confuse "listed" with
+"applied".
+
+```bash
+inframind apply
+inframind apply --subscription <ID>
+inframind apply --resource-group <name>
+```
+
+### `inframind config`
+
+Manage CLI settings and telemetry preferences.
+
+```bash
+inframind config --telemetry status
+inframind config --telemetry disable
+```
+
+### `inframind doctor`
+
+Read-only environment check before a scan: runtime, subscription resolution,
+Azure credentials, pricing cache freshness, telemetry status.
+
+```bash
+inframind doctor
+inframind doctor --subscription <ID>
+```
+
+### `inframind upgrade`
+
+Compares InfraMind Cloud plans and jumps to the right conversion path.
+
+```bash
+inframind upgrade                       # show the pricing table
+inframind upgrade --start-trial solo    # Solo $29/mo trial
+inframind upgrade --start-trial team    # Team $199/mo trial
+inframind upgrade --book-demo           # Enterprise (from $799/mo or 8% of savings)
+inframind upgrade --partner             # MSP / consultancy track (20% revshare)
+inframind upgrade --open                # open the relevant URL in your browser
+```
+
+### `inframind partner`
+
+Previews the MSP / white-label track. Shows the partner pitch, lets you try a
+`--brand` / `--client` header, and jumps to the application form with
+`--apply`.
+
+```bash
+inframind partner
+inframind partner --brand "Acme Consulting" --client "Contoso Ltd"
+inframind partner --apply
+```
+
+### Multi-cloud (coming soon)
+
+`quick-scan` and `apply` accept `--cloud azure|aws|gcp`. v1.0 ships Azure-first;
+the engine, rules, and policy model are cloud-agnostic. Passing `--cloud aws`
+or `--cloud gcp` prints the waitlist CTA — adapters land after v1.0.
+
+---
+
+## What InfraMind does
+
+InfraMind correlates CPU, network, and disk signals using a weighted geometric mean to detect truly idle resources — not just "low CPU" false positives. It runs a 6-layer pipeline before recommending anything:
+
+```
+Discovery → Pricing → Dependency Graph → Decision Engine → Simulation → Forecast
+```
+
+| Step | What happens |
+|------|-------------|
+| **Discovery** | Collects resources and usage metrics from your cloud provider (10 types) |
+| **Pricing** | Fetches real-time retail prices from Azure Retail Prices API with local cache |
+| **Dependency Graph** | Maps relationships (IP → NIC → VM → Disk) to prevent breaking dependencies |
+| **Decision Engine** | Applies rules, computes idle scores, respects criticality and safe-locks |
+| **Simulation** | Dry-runs every recommendation against the dependency graph |
+| **Forecast** | Projects monthly and yearly savings with ROI |
+
+Every recommendation comes with an idle score, confidence level, risk classification, and a full explanation of *why*.
+
+### Resource types scanned
+
+VMs, Managed Disks, Public IPs, Network Interfaces, App Services, SQL Databases, Storage Accounts, Load Balancers, NAT Gateways, Container Instances.
+
+---
+
+## Governance Tags
+
+InfraMind reads resource tags to understand business context. No agents, no sidecars — just tags.
+
+### Mode (`inframind-mode`)
+
+| Value | Analyzed? | Recommendations? | Auto-Execute? |
+|-------|-----------|-------------------|---------------|
+| *(no tag)* | Yes | Yes | Yes |
+| `observe` | Yes | No | No |
+| `protect` | Yes | Yes | **No** |
+| `ignore` | No | No | No |
+
+### Criticality (`inframind-criticality`)
+
+| Value | Thresholds | Risk | Auto-Execute? |
+|-------|-----------|------|---------------|
+| `high` | 2x stricter | +1 level | **Blocked** |
 | `medium` | Standard | No change | Allowed |
-| `low` | 2x more aggressive (easier to flag) | No change | Allowed |
+| `low` | 2x aggressive | No change | Allowed |
 
-Example: a `high` criticality resource with CPU at 3% won't be flagged idle because the threshold drops from 5% to 2.5%.
+### External Dependencies (`inframind-external`)
 
-### 3. External Dependencies (`inframind-external`)
+Flag resources with dependencies outside the cloud graph (VPN, ExpressRoute, on-prem). Confidence is halved, risk increases, auto-execution blocked. If a policy simulation touches external resources, impact auto-escalates to **CRITICAL**.
 
-Flags resources with **dependencies outside the cloud provider's visibility** (VPN, ExpressRoute, on-prem integrations, third-party services).
+### Templates (`inframind-template`)
 
-| Effect | Impact |
-|--------|--------|
-| Confidence | Halved (×0.5) — the analyzer's view is incomplete |
-| Risk | +1 level — unknown dependencies increase danger |
-| Auto-Execute | **Blocked** — manual review required |
-
-### 4. Policy Templates (`inframind-template`)
-
-Named presets that apply mode + criticality + external in one tag. Scales governance across thousands of resources.
+Apply presets at scale:
 
 | Template | Mode | Criticality | External |
 |----------|------|-------------|----------|
@@ -149,90 +321,71 @@ Named presets that apply mode + criticality + external in one tag. Scales govern
 | `legacy` | protect | high | true |
 
 ```bash
-# Apply a template to an entire resource group
 az tag update --resource-id <RG_ID> --operation merge --tags inframind-template=production
 ```
 
-Explicit tags on the same entity override template values.
+### Policy Inheritance
 
-### 5. Policy Override (`inframind-policy: override`)
+Policies resolve by walking the cloud hierarchy:
 
-Blocks inheritance from parent scopes. A resource with this tag only uses its own tags — RG and subscription tags are ignored.
+```
+Resource → Resource Group → Subscription → Default
+```
+
+Each field resolves independently (first-match wins). Use `inframind-policy=override` to block inheritance on a specific resource.
+
+---
+
+## Architecture
+
+```
+inframind-cli/
+├── cmd/
+│   ├── inframind/main.go           # Entry point
+│   ├── root.go                     # Cobra root + global flags
+│   ├── quick_scan.go               # inframind quick-scan
+│   ├── apply.go                    # inframind apply [Cloud]
+│   ├── policy.go                   # inframind policy simulate
+│   └── config.go                   # inframind config
+├── internal/
+│   ├── discovery/                  # Resource & metrics collection
+│   ├── engine/                     # Analyzer, decision, policy, safe-lock
+│   ├── graph/                      # Dependency graph (IP → NIC → VM → Disk)
+│   ├── simulation/                 # Dry-run with dependency safety
+│   ├── forecast/                   # Cost projections & ROI
+│   ├── rules/                      # Pluggable rules (idle, orphan, rightsize, RI)
+│   ├── pipeline/                   # Orchestrates all layers
+│   ├── providers/                  # Cloud adapters (Azure, future: AWS, GCP)
+│   ├── pricing/                    # Azure Retail Prices API + local cache
+│   ├── history/                    # Scan history & trend tracking
+│   └── telemetry/                  # Anonymous usage analytics
+├── pkg/report/                     # Output: colors, formatting, CTA
+├── .goreleaser.yaml                # Cross-compile + Homebrew + release
+└── install.sh                      # curl installer
+```
+
+## Install (all options)
 
 ```bash
-az tag update --resource-id <ID> --operation merge --tags inframind-policy=override inframind-criticality=low
+# Homebrew
+brew install Rafaelhdsg/tap/inframind
+
+# curl
+curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/inframind-cli/main/install.sh | bash
+
+# Go
+go install github.com/Rafaelhdsg/inframind-cli/cmd/inframind@latest
+
+# Build from source
+git clone https://github.com/Rafaelhdsg/inframind-cli.git
+cd inframind-cli
+go build -o inframind ./cmd/inframind
 ```
 
-Also accepts `inframind-inherit: false`.
+## Development
 
-## Policy Inheritance
-
-In a 10,000-resource environment, nobody tags resources one by one. InfraMind resolves policies by walking the cloud hierarchy:
-
-```
-Resource tags  →  Resource Group tags  →  Subscription tags  →  Default
-  (highest)           (inherited)            (inherited)         (lowest)
-```
-
-Each field (mode, criticality, external) is resolved independently using **first-match wins**: if the resource has `criticality=low` but the RG has `criticality=high`, the resource's own value wins.
-
-### How It Works
-
-1. Tag the RG `prod-sap` with `inframind-criticality=high`
-2. All 500 resources inside automatically inherit `criticality=high`
-3. A specific resource can override with `inframind-criticality=low` if needed
-4. Or use `inframind-policy=override` to block all inheritance
-
-### Source Tracking
-
-The report shows exactly where each policy value came from:
-
-```
-POLICY SOURCES
-==============
-/subscriptions/.../myVM:
-  mode:           protect  ← resource_group "prod-sap"
-  criticality:    high     ← template "production" (via resource_group "prod-sap")
-  external:       false    ← default
-```
-
-### Drift Detection
-
-When a resource explicitly diverges from its parent, InfraMind flags it:
-
-```
-POLICY DRIFT WARNINGS
-=====================
-  criticality: resource=low, but resource_group "prod-sap"=high
-```
-
-This helps catch misconfigurations and ensures governance consistency.
-
-### Applying Tags (Azure)
-
-```bash
-# Tag a resource group (all children inherit)
-az tag update --resource-id <RG_ID> --operation merge --tags inframind-template=production
-
-# Tag a subscription (all RGs and resources inherit)
-az tag update --resource-id <SUB_ID> --operation merge --tags inframind-criticality=medium
-
-# Override on a specific resource
-az tag update --resource-id <ID> --operation merge \
-  --tags inframind-policy=override inframind-criticality=low
-```
-
-### Report Sections
-
-The output shows five sections:
-
-- **Recommendations** — actionable findings with idle score, confidence, and auto-execute status
-- **Policy Notes** — explains why auto-execution is blocked for specific resources
-- **Signal Breakdown** — per-signal idle analysis (CPU, network, disk)
-- **Policy Sources** — shows inheritance chain for each resolved policy
-- **Drift Warnings** — flags resources that diverge from their parent's policy
-- **Observed** — observe-mode resources with their scores (no action taken)
-- **Ignored** — ignore-mode resources excluded from all analysis
+- Run tests: `go test ./...`
+- Pre-release checklist (CI, GoReleaser snapshot, Azure smoke): [`docs/RELEASE-CHECKLIST.md`](docs/RELEASE-CHECKLIST.md)
 
 ## License
 

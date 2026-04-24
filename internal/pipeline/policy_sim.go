@@ -19,10 +19,10 @@ type PolicySimResult struct {
 	*engine.PolicySimOutput
 
 	// Full pipeline results for before and after
-	BeforeSim      simulation.Result    `json:"before_simulation"`
-	AfterSim       simulation.Result    `json:"after_simulation"`
-	BeforeForecast forecast.Projection  `json:"before_forecast"`
-	AfterForecast  forecast.Projection  `json:"after_forecast"`
+	BeforeSim      simulation.Result   `json:"before_simulation"`
+	AfterSim       simulation.Result   `json:"after_simulation"`
+	BeforeForecast forecast.Projection `json:"before_forecast"`
+	AfterForecast  forecast.Projection `json:"after_forecast"`
 
 	// Decision-level diff per resource
 	DecisionDiffs []engine.DecisionDiff `json:"decision_diffs"`
@@ -38,15 +38,21 @@ type PolicySimResult struct {
 	ExternalAffected int `json:"external_affected"`
 
 	// Impact assessment
-	Impact     engine.ImpactLevel `json:"impact_score"`
-	Safety     string             `json:"safety_recommendation"`
-	Summary    string             `json:"summary"`
+	Impact  engine.ImpactLevel `json:"impact_score"`
+	Safety  string             `json:"safety_recommendation"`
+	Summary string             `json:"summary"`
 }
 
 // SimulatePolicy runs the full pipeline twice (before and after hypothetical
 // policy change) including simulation engine + forecast, then diffs everything.
 func (p *Pipeline) SimulatePolicy(ctx context.Context, resourceTypes []string, input engine.PolicySimInput, forecastMonths int) (*PolicySimResult, error) {
 	collector := discovery.NewCollector(p.provider)
+	if input.Scope == engine.ScopeResourceGroup && input.ScopeName != "" {
+		collector.ResourceGroupFilter = input.ScopeName
+	}
+	if p.OnProgress != nil {
+		collector.OnProgress = discovery.ProgressFunc(p.OnProgress)
+	}
 	snap, err := collector.Collect(ctx, resourceTypes)
 	if err != nil {
 		return nil, fmt.Errorf("discovery: %w", err)
@@ -67,9 +73,11 @@ func (p *Pipeline) SimulatePolicy(ctx context.Context, resourceTypes []string, i
 		resourceInfos[r.ID] = engine.ResourceInfoForSim{Name: r.Name, Type: r.Type}
 	}
 
+	p.progress("Computing policy diff...", "")
 	policyDiff := engine.SimulatePolicyChange(p.resolver, hierarchies, resourceInfos, input)
 
 	// ── BEFORE: full pipeline with current policies ──
+	p.progress("Running BEFORE scenario...", "current policies")
 	beforePolicies := p.resolvePolicies(snap)
 	beforeRecs := p.runRules(snap, beforePolicies)
 	beforeDG := buildGraph(snap.Resources)
@@ -78,6 +86,7 @@ func (p *Pipeline) SimulatePolicy(ctx context.Context, resourceTypes []string, i
 	beforeForecast := forecast.Calculate(beforeSim, forecastMonths)
 
 	// ── AFTER: full pipeline with hypothetical policies ──
+	p.progress("Running AFTER scenario...", "hypothetical policies")
 	afterSnap := cloneSnapshot(snap)
 	applyHypotheticalToSnap(afterSnap, input)
 	afterPolicies := p.resolvePolicies(afterSnap)
@@ -88,6 +97,7 @@ func (p *Pipeline) SimulatePolicy(ctx context.Context, resourceTypes []string, i
 	afterForecast := forecast.Calculate(afterSim, forecastMonths)
 
 	// ── DECISION DIFFS: per-resource before/after comparison ──
+	p.progress("Computing impact analysis...", "")
 	diffs := buildDecisionDiffs(scoped, beforeRecs, afterRecs, policyDiff, resourceInfos)
 
 	beforeSavings := beforeSim.TotalSaving
@@ -218,6 +228,7 @@ func buildGraph(resources []providers.Resource) *graph.DependencyGraph {
 	for _, r := range resources {
 		dg.AddNode(&graph.Node{ID: r.ID, Type: r.Type, Name: r.Name})
 	}
+	graph.LinkAzureResources(dg, resources)
 	return dg
 }
 
@@ -229,7 +240,8 @@ func recsToDE(recs []engine.Recommendation) *engine.DecisionEngine {
 	return de
 }
 
-// runRules executes rules against a snapshot with the given policies.
+// runRules executes rules against a snapshot with the given policies,
+// including full safety context (graph, locks, snapshots, pricing).
 func (p *Pipeline) runRules(snap *discovery.Snapshot, policies map[string]*engine.ResolvedPolicy) []engine.Recommendation {
 	var actionable []providers.Resource
 	for _, r := range snap.Resources {
@@ -242,12 +254,18 @@ func (p *Pipeline) runRules(snap *discovery.Snapshot, policies map[string]*engin
 
 	analyses := p.analyzeMetrics(snap.Metrics, actionable, policies)
 
+	dg := buildGraph(snap.Resources)
+
 	de := engine.NewDecisionEngine()
 	evalCtx := rules.EvalContext{
 		Resources: actionable,
 		Metrics:   snap.Metrics,
 		Analyses:  analyses,
 		Policies:  policies,
+		Graph:     dg,
+		Locks:     snap.Locks,
+		Snapshots: snap.Snapshots,
+		Pricing:   p.pricing,
 	}
 	for _, rule := range p.rules {
 		for _, rec := range rule.Evaluate(evalCtx) {
@@ -278,6 +296,8 @@ func cloneSnapshot(snap *discovery.Snapshot) *discovery.Snapshot {
 		SubscriptionTags:  copySubTags(snap.SubscriptionTags),
 		SubscriptionName:  snap.SubscriptionName,
 		ResourceGroupTags: copyRGTags(snap.ResourceGroupTags),
+		Locks:             snap.Locks,
+		Snapshots:         snap.Snapshots,
 	}
 }
 

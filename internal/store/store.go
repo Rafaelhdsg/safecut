@@ -4,13 +4,13 @@ import "time"
 
 // Record represents a single saved analysis run for historical tracking.
 type Record struct {
-	ID            string
-	Timestamp     time.Time
-	Provider      string
-	TotalResources int
+	ID              string
+	Timestamp       time.Time
+	Provider        string
+	TotalResources  int
 	Recommendations int
-	MonthlySaving float64
-	AnnualSaving  float64
+	MonthlySaving   float64
+	AnnualSaving    float64
 }
 
 // Store defines the interface for persisting analysis results.

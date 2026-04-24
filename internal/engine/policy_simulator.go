@@ -47,13 +47,13 @@ type FieldChange struct {
 
 // PolicyComparison is the before/after diff for a single resource.
 type PolicyComparison struct {
-	ResourceID   string        `json:"resource_id"`
-	ResourceName string        `json:"resource_name"`
-	ResourceType string        `json:"resource_type"`
+	ResourceID   string          `json:"resource_id"`
+	ResourceName string          `json:"resource_name"`
+	ResourceType string          `json:"resource_type"`
 	Before       *ResolvedPolicy `json:"before"`
 	After        *ResolvedPolicy `json:"after"`
-	Changes      []FieldChange `json:"changes"`
-	Inherited    bool          `json:"inherited"`
+	Changes      []FieldChange   `json:"changes"`
+	Inherited    bool            `json:"inherited"`
 }
 
 // ImpactLevel classifies the overall blast radius of a policy change.
@@ -422,11 +422,6 @@ func describeModeImpact(before, after PolicyMode) string {
 func describeCriticalityImpact(before, after Criticality) string {
 	switch {
 	case after == CriticalityHigh:
-		mult := DefaultPolicy().ThresholdMultiplier()
-		if before != CriticalityNone {
-			return fmt.Sprintf("Thresholds will tighten (×0.5), risk +1, auto-execution blocked")
-		}
-		_ = mult
 		return "Thresholds will tighten (×0.5), risk +1, auto-execution blocked"
 	case after == CriticalityLow:
 		return "Thresholds will be more aggressive (×2.0), easier to flag idle"

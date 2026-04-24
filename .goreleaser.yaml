@@ -1,0 +1,93 @@
+version: 2
+
+project_name: inframind
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: inframind
+    main: ./cmd/inframind
+    binary: inframind
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/Rafaelhdsg/inframind-cli/internal/version.Version={{.Version}}
+      - -X github.com/Rafaelhdsg/inframind-cli/internal/version.Commit={{.ShortCommit}}
+      - -X github.com/Rafaelhdsg/inframind-cli/internal/version.Date={{.Date}}
+
+archives:
+  - id: default
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+
+brews:
+  - repository:
+      owner: Rafaelhdsg
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/Rafaelhdsg/inframind-cli"
+    description: "Decision engine for cloud infrastructure — analyze, simulate, and optimize costs"
+    license: "MIT"
+    install: |
+      bin.install "inframind"
+    test: |
+      # Both forms must work: the explicit subcommand (stable API for
+      # scripts/CI) and the cobra --version flag.
+      assert_match "inframind", shell_output("#{bin}/inframind version")
+      system "#{bin}/inframind", "--version"
+      system "#{bin}/inframind", "--help"
+
+release:
+  github:
+    owner: Rafaelhdsg
+    name: inframind-cli
+  draft: false
+  prerelease: auto
+  name_template: "InfraMind v{{ .Version }}"
+  header: |
+    ## What's New
+
+    Run `inframind quick-scan` to see instant savings potential.
+  footer: |
+    ## Install
+
+    ```bash
+    # Homebrew
+    brew install Rafaelhdsg/tap/inframind
+
+    # curl (Linux/macOS)
+    curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/inframind-cli/main/install.sh | bash
+
+    # Go
+    go install github.com/Rafaelhdsg/inframind-cli/cmd/inframind@latest
+    ```

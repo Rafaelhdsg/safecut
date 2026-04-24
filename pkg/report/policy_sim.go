@@ -26,37 +26,44 @@ func RenderPolicySim(w io.Writer, result *pipeline.PolicySimResult, format Forma
 }
 
 func renderPolicySimTable(w io.Writer, r *pipeline.PolicySimResult) error {
-	// ── HEADER ──
-	fmt.Fprintln(w, "POLICY SIMULATION REPORT")
-	fmt.Fprintln(w, "========================")
-	fmt.Fprintf(w, "Scope:   %s \"%s\" (%d resources)\n", r.Scope, r.ScopeName, r.TotalResources)
-	fmt.Fprintf(w, "Action:  Set %s\n", formatSetTags(r.SetTags))
-	fmt.Fprintf(w, "Impact:  %s\n", formatImpactBadge(r.Impact))
 	fmt.Fprintln(w)
 
-	// ── MELHORIA 1: DELTA EXPLÍCITO (ANTES vs DEPOIS) ──
+	// ── AGGRESSIVE SUMMARY (first thing the user reads) ──
+	fmt.Fprintf(w, "  %s\n", Header("POLICY SIMULATION REPORT"))
+	fmt.Fprintf(w, "  %s\n", Dim("========================"))
+	fmt.Fprintln(w)
+	fmt.Fprintf(w, "  %s\n", buildAggressiveSummary(r))
+	fmt.Fprintln(w)
+	fmt.Fprintf(w, "  Scope:   %s %s (%d resources)\n", r.Scope, Bold("\""+r.ScopeName+"\""), r.TotalResources)
+	fmt.Fprintf(w, "  Action:  Set %s\n", Bold(formatSetTags(r.SetTags)))
+	fmt.Fprintf(w, "  Impact:  %s\n", colorImpact(r.Impact))
+	fmt.Fprintln(w)
+
+	// ── POLICY CHANGES (Before vs After) ──
 	if len(r.Comparisons) > 0 {
-		fmt.Fprintln(w, "POLICY CHANGES (Before vs After)")
-		fmt.Fprintln(w, "================================")
+		fmt.Fprintf(w, "  %s\n", Section("POLICY CHANGES (Before vs After)"))
+		fmt.Fprintf(w, "  %s\n", Dim("================================"))
 		tw := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
-		fmt.Fprintln(tw, "RESOURCE\tFIELD\tBEFORE\tAFTER\tSOURCE")
-		fmt.Fprintln(tw, "--------\t-----\t------\t-----\t------")
-		for _, c := range r.Comparisons {
-			label := c.ResourceName
+		fmt.Fprintf(tw, "  %s\t%s\t%s\t%s\t%s\n",
+			Dim("RESOURCE"), Dim("FIELD"), Dim("BEFORE"), Dim("AFTER"), Dim("SOURCE"))
+		fmt.Fprintf(tw, "  %s\t%s\t%s\t%s\t%s\n",
+			Dim("--------"), Dim("-----"), Dim("------"), Dim("-----"), Dim("------"))
+		for _, comp := range r.Comparisons {
+			label := comp.ResourceName
 			if label == "" {
-				label = shortID(c.ResourceID)
+				label = shortID(comp.ResourceID)
 			}
-			src := "direct"
-			if c.Inherited {
-				src = "inherited"
+			src := Dim("direct")
+			if comp.Inherited {
+				src = Yellow("inherited")
 			}
-			for i, ch := range c.Changes {
+			for i, ch := range comp.Changes {
 				name := ""
 				if i == 0 {
-					name = label
+					name = Bold(label)
 				}
-				fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n",
-					name, ch.Field, policyVal(ch.Before), policyVal(ch.After), src)
+				fmt.Fprintf(tw, "  %s\t%s\t%s\t%s\t%s\n",
+					name, ch.Field, Dim(policyVal(ch.Before)), Bold(policyVal(ch.After)), src)
 			}
 		}
 		if err := tw.Flush(); err != nil {
@@ -65,99 +72,160 @@ func renderPolicySimTable(w io.Writer, r *pipeline.PolicySimResult) error {
 		fmt.Fprintln(w)
 	}
 
-	// ── MELHORIA 2: DECISION DIFF (ANTES vs DEPOIS POR RECURSO) ──
+	// ── DECISION DIFF ──
 	if len(r.DecisionDiffs) > 0 {
-		fmt.Fprintln(w, "DECISION DIFF")
-		fmt.Fprintln(w, "=============")
+		fmt.Fprintf(w, "  %s\n", Section("DECISION DIFF"))
+		fmt.Fprintf(w, "  %s\n", Dim("============="))
 		for _, d := range r.DecisionDiffs {
 			name := d.ResourceName
 			if name == "" {
 				name = shortID(d.ResourceID)
 			}
-			fmt.Fprintf(w, "%s %s:\n", d.ResourceType, name)
-			fmt.Fprintf(w, "  Before:  %s (risk=%s, confidence=%.2f, auto=%v, $%.2f/mo)\n",
-				d.BeforeAction, d.BeforeRisk, d.BeforeConf, d.BeforeAuto, d.BeforeSaving)
-			fmt.Fprintf(w, "  After:   %s (risk=%s, confidence=%.2f, auto=%v, $%.2f/mo)\n",
-				d.AfterAction, d.AfterRisk, d.AfterConf, d.AfterAuto, d.AfterSaving)
+			fmt.Fprintf(w, "  %s %s:\n", Dim(d.ResourceType), Bold(name))
+			fmt.Fprintf(w, "    Before:  %s (risk=%s, confidence=%.2f, auto=%v, %s/mo)\n",
+				Dim(d.BeforeAction), RiskColor(d.BeforeRisk.String()), d.BeforeConf, d.BeforeAuto, Dim(fmt.Sprintf("$%.2f", d.BeforeSaving)))
+			fmt.Fprintf(w, "    After:   %s (risk=%s, confidence=%.2f, auto=%v, %s/mo)\n",
+				Bold(d.AfterAction), RiskColor(d.AfterRisk.String()), d.AfterConf, d.AfterAuto, Savings(d.AfterSaving))
 
-			// ── MELHORIA 3: POLICY EXPLANATION (WHY) ──
 			if len(d.Explanation) > 0 {
-				fmt.Fprintln(w, "  WHY:")
+				fmt.Fprintf(w, "    %s\n", Yellow("WHY:"))
 				for _, reason := range d.Explanation {
-					fmt.Fprintf(w, "    - %s\n", reason)
+					fmt.Fprintf(w, "      %s %s\n", Yellow("-"), reason)
 				}
 			}
 			fmt.Fprintln(w)
 		}
 	}
 
-	// ── IMPACT SUMMARY ──
-	fmt.Fprintln(w, "IMPACT SUMMARY")
-	fmt.Fprintln(w, "--------------")
-	fmt.Fprintf(w, "  Resources affected:     %d of %d (%.0f%%)\n",
-		r.AffectedCount, r.TotalResources, safePct(r.AffectedCount, r.TotalResources))
-	fmt.Fprintf(w, "  Via inheritance:        %d\n", r.InheritedCount)
-	fmt.Fprintf(w, "  Decision changes:       %d\n", len(r.DecisionDiffs))
-	if r.DriftsResolved > 0 {
-		fmt.Fprintf(w, "  Drifts resolved:        %d\n", r.DriftsResolved)
-	}
-	if r.DriftsCreated > 0 {
-		fmt.Fprintf(w, "  Drifts created:         %d\n", r.DriftsCreated)
-	}
-	fmt.Fprintln(w)
-
-	// ── SIMULATION & FORECAST (full pipeline) ──
-	fmt.Fprintln(w, "SIMULATION RESULTS")
-	fmt.Fprintln(w, "------------------")
+	// ── SIMULATION RESULTS (before/after table) ──
+	fmt.Fprintf(w, "  %s\n", Section("SIMULATION RESULTS"))
+	fmt.Fprintf(w, "  %s\n", Dim("------------------"))
 	tw2 := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
-	fmt.Fprintln(tw2, "\tBEFORE\tAFTER\tDELTA")
-	fmt.Fprintln(tw2, "\t------\t-----\t-----")
-	fmt.Fprintf(tw2, "Recommendations\t%d\t%d\t%s%d\n",
-		r.BeforeRecsCount, r.AfterRecsCount, intSign(r.AfterRecsCount-r.BeforeRecsCount), intAbs(r.AfterRecsCount-r.BeforeRecsCount))
-	fmt.Fprintf(tw2, "Sim. Applied\t%d\t%d\t%s%d\n",
+	fmt.Fprintf(tw2, "  \t%s\t%s\t%s\n", Dim("BEFORE"), Dim("AFTER"), Dim("DELTA"))
+	fmt.Fprintf(tw2, "  \t%s\t%s\t%s\n", Dim("------"), Dim("-----"), Dim("-----"))
+	fmt.Fprintf(tw2, "  Recommendations\t%d\t%d\t%s\n",
+		r.BeforeRecsCount, r.AfterRecsCount, colorIntDelta(r.AfterRecsCount-r.BeforeRecsCount))
+	fmt.Fprintf(tw2, "  Sim. Applied\t%d\t%d\t%s\n",
 		len(r.BeforeSim.Applied), len(r.AfterSim.Applied),
-		intSign(len(r.AfterSim.Applied)-len(r.BeforeSim.Applied)),
-		intAbs(len(r.AfterSim.Applied)-len(r.BeforeSim.Applied)))
-	fmt.Fprintf(tw2, "Sim. Skipped\t%d\t%d\t%s%d\n",
+		colorIntDelta(len(r.AfterSim.Applied)-len(r.BeforeSim.Applied)))
+	fmt.Fprintf(tw2, "  Sim. Skipped\t%d\t%d\t%s\n",
 		len(r.BeforeSim.Skipped), len(r.AfterSim.Skipped),
-		intSign(len(r.AfterSim.Skipped)-len(r.BeforeSim.Skipped)),
-		intAbs(len(r.AfterSim.Skipped)-len(r.BeforeSim.Skipped)))
-	fmt.Fprintf(tw2, "Monthly Savings\t$%.2f\t$%.2f\t%s$%.2f\n",
-		r.BeforeSavings, r.AfterSavings, deltaSign(r.SavingsDelta), abs(r.SavingsDelta))
-	fmt.Fprintf(tw2, "12-mo Forecast\t$%.2f\t$%.2f\t%s$%.2f\n",
-		r.BeforeForecast.TotalSaving, r.AfterForecast.TotalSaving,
-		deltaSign(r.AfterForecast.TotalSaving-r.BeforeForecast.TotalSaving),
-		abs(r.AfterForecast.TotalSaving-r.BeforeForecast.TotalSaving))
+		colorIntDelta(len(r.AfterSim.Skipped)-len(r.BeforeSim.Skipped)))
+	fmt.Fprintf(tw2, "  Monthly Savings\t$%.2f\t$%.2f\t%s\n",
+		r.BeforeSavings, r.AfterSavings, SavingsDelta(r.SavingsDelta))
+	forecastDelta := r.AfterForecast.TotalSaving - r.BeforeForecast.TotalSaving
+	fmt.Fprintf(tw2, "  12-mo Forecast\t$%.2f\t$%.2f\t%s\n",
+		r.BeforeForecast.TotalSaving, r.AfterForecast.TotalSaving, SavingsDelta(forecastDelta))
 	if err := tw2.Flush(); err != nil {
 		return err
 	}
 	fmt.Fprintln(w)
 
-	// ── MELHORIA 4: IMPACT SCORE ──
-	fmt.Fprintln(w, "IMPACT SCORE")
-	fmt.Fprintln(w, "============")
-	fmt.Fprintf(w, "  Score:  %s\n", formatImpactBadge(r.Impact))
+	// ── IMPACT SCORE ──
+	fmt.Fprintf(w, "  %s\n", Section("IMPACT SCORE"))
+	fmt.Fprintf(w, "  %s\n", Dim("============"))
+	fmt.Fprintf(w, "  Score:  %s\n", colorImpact(r.Impact))
 	fmt.Fprintln(w, "  Based on:")
-	fmt.Fprintf(w, "    - Resources affected:   %d of %d (%.0f%%)\n",
-		r.AffectedCount, r.TotalResources, safePct(r.AffectedCount, r.TotalResources))
-	fmt.Fprintf(w, "    - Decision changes:     %d\n", len(r.DecisionDiffs))
-	fmt.Fprintf(w, "    - Financial delta:      %s$%.2f/mo (%.0f%%)\n",
-		deltaSign(r.SavingsDelta), abs(r.SavingsDelta), abs(savingsDeltaPct(r.BeforeSavings, r.SavingsDelta)))
+	fmt.Fprintf(w, "    - Resources affected:   %s of %d (%.0f%%)\n",
+		Bold(fmt.Sprintf("%d", r.AffectedCount)), r.TotalResources, safePct(r.AffectedCount, r.TotalResources))
+	fmt.Fprintf(w, "    - Decision changes:     %s\n", Bold(fmt.Sprintf("%d", len(r.DecisionDiffs))))
+	fmt.Fprintf(w, "    - Financial delta:      %s/mo (%.0f%%)\n",
+		SavingsDelta(r.SavingsDelta), abs(savingsDeltaPct(r.BeforeSavings, r.SavingsDelta)))
 	if r.ExternalAffected > 0 {
-		fmt.Fprintf(w, "    - EXTERNAL DEPS:        %d resource(s) with external dependencies  >>> AUTO-ESCALATED TO CRITICAL\n", r.ExternalAffected)
+		fmt.Fprintf(w, "    - %s\n",
+			BoldRed(fmt.Sprintf("EXTERNAL DEPS: %d resource(s) >>> AUTO-ESCALATED TO CRITICAL", r.ExternalAffected)))
 	}
 	fmt.Fprintln(w)
 
-	// ── MELHORIA 5: SAFE RECOMMENDATION ──
-	fmt.Fprintln(w, "RECOMMENDATION")
-	fmt.Fprintln(w, "==============")
-	fmt.Fprintf(w, "  %s\n", r.Safety)
+	// ── RECOMMENDATION ──
+	fmt.Fprintf(w, "  %s\n", Section("RECOMMENDATION"))
+	fmt.Fprintf(w, "  %s\n", Dim("=============="))
+	fmt.Fprintf(w, "  %s\n", colorSafety(r.Impact, r.Safety))
 	fmt.Fprintln(w)
 
-	// ── SUMMARY ──
-	fmt.Fprintf(w, "\"%s\"\n", r.Summary)
+	// ── CONVERSION CTA ──
+	fmt.Fprintf(w, "%s\n", CloudCTA(r.AfterSavings))
+	fmt.Fprintln(w)
 
 	return nil
+}
+
+func buildAggressiveSummary(r *pipeline.PolicySimResult) string {
+	newlyProtected := 0
+	newlyActionable := 0
+	for _, d := range r.DecisionDiffs {
+		if d.BeforeAuto && !d.AfterAuto {
+			newlyProtected++
+		}
+		if !d.BeforeAuto && d.AfterAuto {
+			newlyActionable++
+		}
+	}
+
+	delta := r.SavingsDelta
+	switch {
+	case r.ExternalAffected > 0:
+		return BoldRed(fmt.Sprintf(
+			"This change touches %d resource(s) with external dependencies. "+
+				"Impact auto-escalated to CRITICAL. Savings delta: %s/mo.",
+			r.ExternalAffected, SavingsDelta(delta)))
+	case delta < 0 && newlyProtected > 0:
+		return BoldYellow(fmt.Sprintf(
+			"This change will reduce savings by $%.2f/mo but increase safety for %d critical resource(s).",
+			-delta, newlyProtected))
+	case delta > 0 && newlyActionable > 0:
+		return BoldGreen(fmt.Sprintf(
+			"This change unlocks $%.2f/mo in new savings by relaxing protections on %d resource(s).",
+			delta, newlyActionable))
+	case r.AffectedCount == 0:
+		return Dim("No resources would be affected by this policy change.")
+	case delta == 0:
+		return Bold(fmt.Sprintf(
+			"This change affects %d resource(s) with no financial impact. Policy posture will shift.",
+			r.AffectedCount))
+	default:
+		return Bold(fmt.Sprintf(
+			"This change affects %d resource(s). Savings delta: %s/mo.",
+			r.AffectedCount, SavingsDelta(delta)))
+	}
+}
+
+func colorImpact(level engine.ImpactLevel) string {
+	switch level {
+	case engine.ImpactCritical:
+		return BadgeCritical("Major blast radius")
+	case engine.ImpactHigh:
+		return BadgeHigh("Significant change")
+	case engine.ImpactMedium:
+		return BadgeMedium("Moderate change")
+	default:
+		return BadgeLow("Minimal impact")
+	}
+}
+
+func colorIntDelta(n int) string {
+	s := fmt.Sprintf("%+d", n)
+	switch {
+	case n > 0:
+		return Green(s)
+	case n < 0:
+		return Red(s)
+	default:
+		return Dim(s)
+	}
+}
+
+func colorSafety(impact engine.ImpactLevel, text string) string {
+	switch impact {
+	case engine.ImpactCritical:
+		return BoldRed(text)
+	case engine.ImpactHigh:
+		return Red(text)
+	case engine.ImpactMedium:
+		return Yellow(text)
+	default:
+		return Green(text)
+	}
 }
 
 func formatSetTags(tags map[string]string) string {
@@ -166,19 +234,6 @@ func formatSetTags(tags map[string]string) string {
 		parts = append(parts, fmt.Sprintf("%s=%s", k, v))
 	}
 	return strings.Join(parts, ", ")
-}
-
-func formatImpactBadge(level engine.ImpactLevel) string {
-	switch level {
-	case engine.ImpactCritical:
-		return "[CRITICAL] !!!"
-	case engine.ImpactHigh:
-		return "[HIGH] !!"
-	case engine.ImpactMedium:
-		return "[MEDIUM]"
-	default:
-		return "[LOW]"
-	}
 }
 
 func policyVal(v string) string {
@@ -254,7 +309,7 @@ func exportPolicySimMarkdown(w io.Writer, r *pipeline.PolicySimResult) error {
 	fmt.Fprintf(w, "**Impact:** `%s`  \n\n", r.Impact)
 
 	if len(r.Comparisons) > 0 {
-		fmt.Fprintln(w, "## Policy Changes (Before vs After)\n")
+		fmt.Fprintf(w, "## Policy Changes (Before vs After)\n\n")
 		fmt.Fprintln(w, "| Resource | Field | Before | After | Source |")
 		fmt.Fprintln(w, "|----------|-------|--------|-------|--------|")
 		for _, c := range r.Comparisons {
@@ -279,7 +334,7 @@ func exportPolicySimMarkdown(w io.Writer, r *pipeline.PolicySimResult) error {
 	}
 
 	if len(r.DecisionDiffs) > 0 {
-		fmt.Fprintln(w, "## Decision Diff\n")
+		fmt.Fprintf(w, "## Decision Diff\n\n")
 		for _, d := range r.DecisionDiffs {
 			name := d.ResourceName
 			if name == "" {
@@ -300,7 +355,7 @@ func exportPolicySimMarkdown(w io.Writer, r *pipeline.PolicySimResult) error {
 		}
 	}
 
-	fmt.Fprintln(w, "## Simulation Results\n")
+	fmt.Fprintf(w, "## Simulation Results\n\n")
 	fmt.Fprintln(w, "| Metric | Before | After | Delta |")
 	fmt.Fprintln(w, "|--------|--------|-------|-------|")
 	fmt.Fprintf(w, "| Recommendations | %d | %d | %s%d |\n",
@@ -317,7 +372,7 @@ func exportPolicySimMarkdown(w io.Writer, r *pipeline.PolicySimResult) error {
 		abs(r.AfterForecast.TotalSaving-r.BeforeForecast.TotalSaving))
 	fmt.Fprintln(w)
 
-	fmt.Fprintln(w, "## Impact Score\n")
+	fmt.Fprintf(w, "## Impact Score\n\n")
 	fmt.Fprintf(w, "**%s**\n\n", r.Impact)
 	fmt.Fprintf(w, "- Resources affected: %d of %d (%.0f%%)\n",
 		r.AffectedCount, r.TotalResources, safePct(r.AffectedCount, r.TotalResources))
@@ -328,10 +383,13 @@ func exportPolicySimMarkdown(w io.Writer, r *pipeline.PolicySimResult) error {
 	}
 	fmt.Fprintln(w)
 
-	fmt.Fprintln(w, "## Recommendation\n")
+	fmt.Fprintf(w, "## Recommendation\n\n")
 	fmt.Fprintf(w, "> %s\n\n", r.Safety)
 
-	fmt.Fprintf(w, "---\n\n*%s*\n", r.Summary)
+	fmt.Fprintf(w, "---\n\n*%s*\n\n", r.Summary)
+	fmt.Fprintf(w, "---\n\n")
+	fmt.Fprintf(w, "> **Found savings?** Let InfraMind Cloud track and automate them for you.\n>\n")
+	fmt.Fprintf(w, "> [Join the Waitlist](%s)\n", WaitlistURL)
 	return nil
 }
 
@@ -468,11 +526,22 @@ func exportPolicySimHTML(w io.Writer, r *pipeline.PolicySimResult) error {
 
 	fmt.Fprintf(w, `<div class="recommendation"><strong>Recommendation:</strong> %s</div>
 <p class="summary">%s</p>
-<hr>
-<p style="font-size:0.8em;color:#999;">Generated by InfraMind CLI — Policy Simulation Engine</p>
+
+<footer style="margin-top:3rem;padding:1.5rem;background:#16213e;border-radius:8px;text-align:center;">
+  <p style="color:#a0a0c0;font-size:0.95em;margin:0 0 0.75rem 0;">
+    Found savings? Let InfraMind Cloud track and automate them for you.
+  </p>
+  <a href="%s"
+     style="display:inline-block;padding:10px 28px;background:#3498db;color:white;text-decoration:none;border-radius:6px;font-weight:bold;font-size:1em;">
+    Join the Waitlist
+  </a>
+  <p style="color:#555;font-size:0.75em;margin:0.75rem 0 0 0;">
+    Generated by InfraMind CLI — Policy Simulation Engine
+  </p>
+</footer>
 </body>
 </html>
-`, r.Safety, r.Summary)
+`, r.Safety, r.Summary, WaitlistURL)
 
 	return nil
 }

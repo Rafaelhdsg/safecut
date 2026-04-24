@@ -30,3 +30,12 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Local build artefacts — release binaries come from GoReleaser, not the repo
+/inframind
+/inframind-*
+dist/
+bin/
+
+# Go tooling side-effects
+*.prof

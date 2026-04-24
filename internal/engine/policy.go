@@ -30,10 +30,10 @@ func (o PolicyOrigin) String() string {
 // inheritance metadata, and drift detection.
 type ResolvedPolicy struct {
 	ResourcePolicy
-	ModeOrigin        PolicyOrigin `json:"mode_origin"`
-	CriticalityOrigin PolicyOrigin `json:"criticality_origin"`
-	ExternalOrigin    PolicyOrigin `json:"external_origin"`
-	Override          bool         `json:"override"`
+	ModeOrigin        PolicyOrigin  `json:"mode_origin"`
+	CriticalityOrigin PolicyOrigin  `json:"criticality_origin"`
+	ExternalOrigin    PolicyOrigin  `json:"external_origin"`
+	Override          bool          `json:"override"`
 	Drifts            []PolicyDrift `json:"drifts,omitempty"`
 }
 
@@ -68,8 +68,8 @@ var BuiltinTemplates = map[string]PolicyTemplate{
 // The PolicyResolver walks this from resource → RG → subscription to
 // resolve inherited values.
 type TagHierarchy struct {
-	SubscriptionTags map[string]string
-	SubscriptionName string
+	SubscriptionTags  map[string]string
+	SubscriptionName  string
 	ResourceGroupTags map[string]string
 	ResourceGroupName string
 	ResourceTags      map[string]string
@@ -83,17 +83,6 @@ type PolicyResolver struct {
 
 func NewPolicyResolver() *PolicyResolver {
 	return &PolicyResolver{templates: BuiltinTemplates}
-}
-
-func NewPolicyResolverWithTemplates(custom map[string]PolicyTemplate) *PolicyResolver {
-	merged := make(map[string]PolicyTemplate, len(BuiltinTemplates)+len(custom))
-	for k, v := range BuiltinTemplates {
-		merged[k] = v
-	}
-	for k, v := range custom {
-		merged[k] = v
-	}
-	return &PolicyResolver{templates: merged}
 }
 
 // Resolve walks the tag hierarchy and produces a fully-resolved policy

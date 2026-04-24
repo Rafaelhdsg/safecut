@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfraMind — Pricing</title>
+<meta name="description" content="InfraMind pricing: Free CLI, Solo $29/mo, Team $199/mo, Enterprise from $799/mo or 8% of savings, and Partner/MSP with 20% revshare.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0e1a; --bg-card: #111827; --bg-elev: #1a2334;
+    --cyan: #22d3ee; --cyan-dim: #0e7490;
+    --green: #34d399; --yellow: #fbbf24; --red: #f87171;
+    --text: #e2e8f0; --text-dim: #64748b; --text-muted: #94a3b8;
+    --border: #1e293b;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { opacity: 0.85; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1rem 2rem;
+    background: rgba(10,14,26,0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav .logo { font-weight: 800; font-size: 1.25rem; color: var(--cyan); }
+  nav .logo span { color: var(--text); }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
+  .nav-links .btn-nav {
+    background: var(--cyan); color: var(--bg); padding: 0.5rem 1.25rem;
+    border-radius: 6px; font-weight: 600; font-size: 0.85rem;
+  }
+
+  .hero {
+    padding: 8rem 2rem 4rem; text-align: center;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(34,211,238,0.06) 0%, transparent 70%), var(--bg);
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.75rem); font-weight: 800;
+    letter-spacing: -1.5px; line-height: 1.1;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(90deg, var(--cyan), var(--green));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p.sub {
+    margin: 1.25rem auto 0; max-width: 680px;
+    font-size: 1.125rem; color: var(--text-muted);
+  }
+  .badge {
+    display: inline-block; margin-bottom: 1.25rem;
+    padding: 0.35rem 0.85rem; border-radius: 999px;
+    background: rgba(52,211,153,0.12); color: var(--green);
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.4px;
+    border: 1px solid rgba(52,211,153,0.3);
+  }
+
+  section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+  section h2 {
+    font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;
+  }
+  section p.section-sub {
+    color: var(--text-muted); margin-bottom: 2rem;
+  }
+
+  .tiers {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;
+  }
+  @media (max-width: 980px) { .tiers { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .tiers { grid-template-columns: 1fr; } }
+
+  .tier {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem 1.5rem; display: flex;
+    flex-direction: column; gap: 1rem; position: relative;
+  }
+  .tier.featured {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 1px rgba(34,211,238,0.3), 0 20px 50px rgba(34,211,238,0.12);
+  }
+  .tier .tag {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--cyan); color: var(--bg);
+    padding: 0.25rem 0.75rem; border-radius: 999px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.3px;
+  }
+  .tier h3 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.2px; }
+  .tier .price {
+    font-size: 1.75rem; font-weight: 800; color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace; letter-spacing: -0.5px;
+  }
+  .tier .price small {
+    display: block; font-size: 0.8rem; color: var(--text-muted);
+    font-weight: 500; font-family: 'Inter', sans-serif; margin-top: 0.35rem;
+    line-height: 1.35;
+  }
+  .tier .target { font-size: 0.9rem; color: var(--text-muted); }
+  .tier ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .tier ul li {
+    font-size: 0.9rem; color: var(--text); padding-left: 1.25rem;
+    position: relative;
+  }
+  .tier ul li::before {
+    content: "✓"; color: var(--green); position: absolute; left: 0;
+    font-weight: 700;
+  }
+  .tier .cta {
+    margin-top: auto; display: inline-block; text-align: center;
+    background: var(--cyan); color: var(--bg);
+    padding: 0.75rem 1rem; border-radius: 8px;
+    font-weight: 700; letter-spacing: 0.2px;
+    transition: opacity 0.2s;
+  }
+  .tier .cta:hover { opacity: 0.85; color: var(--bg); }
+  .tier.muted .cta {
+    background: transparent; color: var(--cyan);
+    border: 1px solid var(--cyan);
+  }
+
+  .note {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-left: 3px solid var(--yellow);
+    border-radius: 8px; padding: 1rem 1.25rem;
+    color: var(--text-muted); font-size: 0.9rem;
+    margin-top: 2rem;
+  }
+
+  .faq-item {
+    border-top: 1px solid var(--border); padding: 1.5rem 0;
+  }
+  .faq-item h4 {
+    font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .faq-item p { color: var(--text-muted); font-size: 0.95rem; }
+
+  footer {
+    text-align: center; padding: 3rem 2rem; color: var(--text-dim);
+    font-size: 0.85rem; border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">inframind<span>.io</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="#faq">FAQ</a>
+    <a href="https://inframind.io/#waitlist" class="btn-nav">Join waitlist</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="badge">Early access · Founding customer pricing</div>
+  <h1>Pay for the <span class="gradient">savings we prove</span>, not the scans we run.</h1>
+  <p class="sub">
+    The CLI is free forever and ships today. Paid tiers (Solo, Team,
+    Enterprise, Partner) unlock automation, scheduled scans, and
+    white-label reports starting in <strong>v1.1</strong> — join the
+    founding waitlist now to lock in today's price.
+  </p>
+</header>
+
+<section>
+  <h2>Plans</h2>
+  <p class="section-sub">The CLI ships today. Cloud features (auto-apply, scheduled scans, Slack alerts, white-label PDF) ship with <strong>v1.1</strong> — founding members get them at their locked-in price.</p>
+
+  <div class="tiers">
+    <div class="tier muted">
+      <h3>CLI Free</h3>
+      <div class="price">$0<small>forever · read-only</small></div>
+      <p class="target">Individual operators exploring a single Azure subscription.</p>
+      <ul>
+        <li>Full quick-scan, policy simulate, policy lint, history</li>
+        <li>Listing-only apply (no resource is ever modified)</li>
+        <li>1 subscription · 7-day local history</li>
+        <li>No account required, no telemetry by default</li>
+      </ul>
+      <a class="cta" href="https://github.com/Rafaelhdsg/inframind-cli">Download CLI</a>
+    </div>
+
+    <div class="tier featured">
+      <div class="tag">Most popular</div>
+      <h3>Solo</h3>
+      <div class="price">$29<small>/month · early-access waitlist</small></div>
+      <p class="target">Freelancers and single-sub CTOs who want one-click automation.</p>
+      <ul>
+        <li>Everything in CLI Free, plus:</li>
+        <li>3 subscriptions · 90-day history <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>Auto-apply with rollback windows <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>Weekly scheduled scans + email digest <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>White-label PDF export (basic) <em style="color:var(--text-muted)">(v1.1)</em></li>
+      </ul>
+      <a class="cta" href="https://inframind.io/#waitlist">Join founding waitlist</a>
+    </div>
+
+    <div class="tier">
+      <h3>Team</h3>
+      <div class="price">$199<small>/month · up to 10 seats · early-access waitlist</small></div>
+      <p class="target">Startups and scale-ups managing shared Azure estates.</p>
+      <ul>
+        <li>Everything in Solo, plus:</li>
+        <li>10 subscriptions · shared policy templates <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>Slack / Teams alerts on drift <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>SSO + role-based access <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>Scheduled scans with custom cadence <em style="color:var(--text-muted)">(v1.1)</em></li>
+      </ul>
+      <a class="cta" href="https://inframind.io/#waitlist">Join founding waitlist</a>
+    </div>
+
+    <div class="tier">
+      <h3>Enterprise</h3>
+      <div class="price">from $799<small>/month OR 8% of verified savings (greater applies)</small></div>
+      <p class="target">Mid-market / regulated workloads with audit and SAML needs.</p>
+      <ul>
+        <li>Unlimited subscriptions and seats <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>SAML SSO <em style="color:var(--text-muted)">(in design)</em>, audit log <em style="color:var(--text-muted)">(in design)</em>, SOC2 roadmap</li>
+        <li>Performance-based pricing option</li>
+        <li>Dedicated onboarding + support SLA</li>
+      </ul>
+      <a class="cta" href="https://inframind.io/#waitlist">Book a discovery call</a>
+    </div>
+  </div>
+
+  <div class="tiers" style="margin-top:1.25rem; grid-template-columns: 1fr;">
+    <div class="tier">
+      <h3>Partner / MSP</h3>
+      <div class="price">20%<small>recurring revenue share · early-access waitlist</small></div>
+      <p class="target">Consultancies and MSPs who manage Azure cost for 2+ clients.</p>
+      <ul>
+        <li>White-label PDF / HTML reports (logo + colors) <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>Per-client subscription management under one account <em style="color:var(--text-muted)">(v1.1)</em></li>
+        <li>20% recurring revshare on every referral</li>
+        <li>Co-marketing (case studies, shared landing pages)</li>
+      </ul>
+      <a class="cta" href="https://inframind.io/#waitlist">Join partner waitlist</a>
+    </div>
+  </div>
+
+  <div class="note">
+    Early-access pricing is locked in for founding customers for the lifetime
+    of their subscription. Prices may go up after v1.0 ships.
+  </div>
+</section>
+
+<section id="faq">
+  <h2>FAQ</h2>
+  <p class="section-sub">Everything you'd ask before putting a card down.</p>
+
+  <div class="faq-item">
+    <h4>Why is the CLI free if the product saves real money?</h4>
+    <p>
+      Because trust is the bottleneck. You need to run a read-only scan on
+      your own infrastructure and see the numbers before paying anything.
+      The paid tiers start when you want automation, multi-seat collaboration,
+      or white-labeling.
+    </p>
+  </div>
+
+  <div class="faq-item">
+    <h4>Can I switch plans later?</h4>
+    <p>
+      Yes. Upgrade or downgrade at any time. Annual plans are pro-rated;
+      performance-based Enterprise is billed monthly on verified savings.
+    </p>
+  </div>
+
+  <div class="faq-item">
+    <h4>Is my cloud data safe?</h4>
+    <p>
+      The CLI runs entirely on your machine with your Azure credentials —
+      no scan data leaves your environment unless you opt in to
+      InfraMind Cloud. When you do, transport is TLS and at-rest storage is
+      encrypted per-tenant.
+    </p>
+  </div>
+
+  <div class="faq-item">
+    <h4>What does "8% of verified savings" mean?</h4>
+    <p>
+      On the Enterprise performance-based option, we charge 8% of the
+      savings that InfraMind recommendations actually produced — measured
+      against your baseline the month before we started. If we don't move
+      the needle, you don't pay more than the $799/mo floor.
+    </p>
+  </div>
+
+  <div class="faq-item">
+    <h4>Do you offer an MSP / agency discount?</h4>
+    <p>
+      The Partner plan is the MSP path: 20% recurring revshare, white-label
+      reports, and per-client management. Partner features ship with v1.1;
+      <a href="https://inframind.io/#waitlist">join the waitlist</a> to
+      lock in founding revshare terms.
+    </p>
+  </div>
+
+  <div class="faq-item">
+    <h4>What ships today vs. v1.1?</h4>
+    <p>
+      The open-source CLI (quick-scan, policy simulate, policy lint,
+      history, doctor) ships today and is fully read-only. Cloud features
+      — auto-apply with rollback, scheduled scans, Slack alerts,
+      white-label PDF, multi-subscription dashboards — ship with
+      <strong>InfraMind Cloud v1.1</strong>. Founding customers on the
+      waitlist keep their price for the lifetime of their subscription.
+    </p>
+  </div>
+
+  <div class="faq-item">
+    <h4>Can I self-host InfraMind Cloud?</h4>
+    <p>
+      Self-hosted enterprise is on the v1.2 roadmap. For now, the CLI itself
+      is self-hosted (it runs on your machine) — only the dashboard and
+      scheduled scans live in InfraMind Cloud.
+    </p>
+  </div>
+</section>
+
+<footer>
+  InfraMind © 2026 ·
+  <a href="index.html">Home</a> ·
+  <a href="https://github.com/Rafaelhdsg/inframind-cli">GitHub</a> ·
+  <a href="https://inframind.io/#waitlist">Join waitlist</a>
+</footer>
+</body>
+</html>

@@ -72,8 +72,31 @@ real and observable, not just printed text:
 
 ## GitHub secrets
 
-- **`GITHUB_TOKEN`** — provided by Actions for the release job.
-- **`HOMEBREW_TAP_TOKEN`** — required for the Homebrew tap push in [`.goreleaser.yaml`](../.goreleaser.yaml). If unset, confirm whether you still want the brews block or adjust the config.
+- **`GITHUB_TOKEN`** — provided by Actions for the release job. Can
+  write to `Rafaelhdsg/inframind-cli` only.
+- **`HOMEBREW_TAP_TOKEN`** — **required** for the Homebrew tap push.
+  - Must be a dedicated PAT (fine-grained or classic), NOT the default
+    `GITHUB_TOKEN` (which has no access to other repositories).
+  - Fine-grained: resource owner `Rafaelhdsg`, repository access limited
+    to `Rafaelhdsg/homebrew-tap`, permissions `Contents: Read and write`.
+  - Classic: scope `public_repo` is enough for a public tap.
+  - Symptom if the secret is missing / expired / under-scoped: the
+    release step fails at the very end with
+    `homebrew formula: could not get default branch: GET
+    https://api.github.com/repos/Rafaelhdsg/homebrew-tap: 401 Bad
+    credentials`. The GitHub release and checksums are still published
+    (install.sh keeps working), only the tap is out of date.
+  - Recovery: fix the PAT, re-run failed jobs from the Actions UI — the
+    tag is preserved, GoReleaser will refresh the formula idempotently.
+
+## Homebrew tap repository
+
+Before the first release, create `Rafaelhdsg/homebrew-tap`:
+
+- Must be **public** (private taps require extra `brew tap` flags).
+- Name must be exactly `homebrew-<something>` (Homebrew convention).
+- Seed it with a README so the default branch exists; GoReleaser writes
+  `Formula/inframind.rb` automatically on each release.
 
 ## After the tag
 

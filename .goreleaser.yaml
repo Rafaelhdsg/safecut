@@ -49,6 +49,16 @@ changelog:
       - "^test:"
       - "^ci:"
 
+# NOTE: the `brews:` block requires two preconditions to succeed:
+#   1. The repository Rafaelhdsg/homebrew-tap must already exist and be
+#      public (Homebrew rejects private taps without extra setup).
+#   2. The secret HOMEBREW_TAP_TOKEN on Rafaelhdsg/inframind-cli must be
+#      a PAT (fine-grained or classic) with **Contents: read/write** on
+#      the tap repo. The default ${{ secrets.GITHUB_TOKEN }} cannot
+#      write to other repositories, so a dedicated PAT is required.
+# If the PAT is missing, expired, or under-scoped, the whole release
+# aborts with "401 Bad credentials". Fix the secret, then re-run failed
+# jobs from the GitHub Actions UI (the release tag itself is preserved).
 brews:
   - repository:
       owner: Rafaelhdsg

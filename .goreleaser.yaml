@@ -83,6 +83,12 @@ release:
     name: inframind-cli
   draft: false
   prerelease: auto
+  # When a previous run half-succeeded (e.g. the tap step failed after
+  # the archives were already uploaded) a re-run would otherwise abort
+  # with `422 already_exists` on every asset. With this flag GoReleaser
+  # detects the 422, deletes the stale asset, and retries the upload,
+  # making re-runs of the same tag idempotent.
+  replace_existing_artifacts: true
   name_template: "InfraMind v{{ .Version }}"
   header: |
     ## What's New

@@ -22,7 +22,7 @@ that are safe to automate. Actual execution requires InfraMind Cloud.
 
 Use --resource-group to scope to one RG for a faster run.
 
-Join the waitlist at https://inframind.io/#waitlist`,
+Join the waitlist at https://rafaelhdsg.github.io/inframind-cli/#waitlist`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cloud, _ := cmd.Flags().GetString("cloud")
 		if cloud != "" && cloud != "azure" {

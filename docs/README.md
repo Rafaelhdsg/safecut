@@ -11,13 +11,26 @@ This folder contains the InfraMind landing page, served via GitHub Pages.
 
 The page will be live at `https://rafaelhdsg.github.io/inframind-cli/` within a few minutes.
 
-## Custom domain (inframind.io)
+## Custom domain
 
-1. Register the domain and add a DNS CNAME record:
-   - `inframind.io` → `rafaelhdsg.github.io`
-   - Or for `www`: `www.inframind.io` → `rafaelhdsg.github.io`
-2. The `CNAME` file in this folder is already configured for `inframind.io`
-3. In **Settings → Pages → Custom domain**, enter `inframind.io` and enable **Enforce HTTPS**
+The site is currently served from the default GitHub Pages URL
+(`rafaelhdsg.github.io/inframind-cli`). When a final brand domain is
+ready, the steps to wire it up are:
+
+1. Register the domain at any registrar (Cloudflare Registrar, Porkbun
+   and Namecheap are good options for `.io`).
+2. At the registrar's DNS panel, add either:
+   - **Apex** (`example.com`): four A records pointing at GitHub Pages —
+     `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
+     `185.199.111.153`. Optionally add the matching AAAA records for
+     IPv6 (`2606:50c0:8000::153` … `8003::153`).
+   - **Subdomain** (`www.example.com` / `cli.example.com`): one CNAME
+     record pointing at `rafaelhdsg.github.io`.
+3. Drop a single-line `CNAME` file in this folder containing the chosen
+   hostname (e.g. `cli.example.com`) and commit it.
+4. In **Settings → Pages → Custom domain**, enter the same hostname.
+   Wait for the DNS check to pass (usually 5–30 minutes), then tick
+   **Enforce HTTPS** so GitHub provisions a Let's Encrypt certificate.
 
 ## Waitlist form (Formspree)
 

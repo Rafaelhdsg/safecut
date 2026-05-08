@@ -96,23 +96,30 @@ func All() []Tier {
 //
 // The "real" target for each tier is preserved as a comment so future
 // maintainers don't have to re-derive the routing.
+// Note: while we stabilise on a final brand domain, all CTAs route to
+// the GitHub Pages mirror of the landing page (rafaelhdsg.github.io/
+// inframind-cli). When the production domain is live, do a single
+// global replace of this base URL — every other usage in the repo
+// derives from these constants.
 const (
-	// CheckoutSoloURL eventually points to https://inframind.io/checkout/solo.
-	CheckoutSoloURL = "https://inframind.io/#waitlist"
-	// CheckoutTeamURL eventually points to https://inframind.io/checkout/team.
-	CheckoutTeamURL = "https://inframind.io/#waitlist"
-	// EnterpriseURL eventually points to https://inframind.io/enterprise
-	// (Calendly or a gated enterprise form).
-	EnterpriseURL = "https://inframind.io/#waitlist"
-	// PartnerURL eventually points to https://inframind.io/partner
-	// (partner program application form).
-	PartnerURL = "https://inframind.io/#waitlist"
-	// PricingURL is the public pricing page — stable across v1.0 and v1.1.
-	PricingURL = "https://inframind.io/pricing"
+	// CheckoutSoloURL routes to the waitlist anchor while billing is
+	// gated. Final destination will be /checkout/solo on the prod domain.
+	CheckoutSoloURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	// CheckoutTeamURL routes to the waitlist anchor while billing is
+	// gated. Final destination will be /checkout/team.
+	CheckoutTeamURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	// EnterpriseURL routes to the waitlist while the Calendly /
+	// enterprise gate is being set up.
+	EnterpriseURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	// PartnerURL routes to the waitlist until the partner application
+	// form is built.
+	PartnerURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	// PricingURL is the public pricing page — stable across versions.
+	PricingURL = "https://rafaelhdsg.github.io/inframind-cli/pricing.html"
 	// WaitlistURL is the canonical fallback CTA while Cloud is in
 	// early access. Do not remove — doubles as the friendly stub for
 	// unsupported `--cloud aws|gcp` flags.
-	WaitlistURL = "https://inframind.io/#waitlist"
+	WaitlistURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
 )
 
 // SoloMonthlyUSD is the numeric Solo price used for payback math in CTAs.

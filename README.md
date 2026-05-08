@@ -53,7 +53,7 @@ lock in today's price for the lifetime of their subscription.
 | **Enterprise**  | from $799/mo **or 8% of verified savings**    | **v1.1 waitlist** | Mid-market / regulated — SAML (in design), audit |
 | **Partner/MSP** | 20% recurring revshare                        | **v1.1 waitlist** | MSPs / consultants managing 2+ clients           |
 
-Full pricing and FAQ: [inframind.io/pricing](https://inframind.io/pricing)
+Full pricing and FAQ: [pricing page](https://rafaelhdsg.github.io/inframind-cli/pricing.html)
 or run `inframind upgrade` for the in-terminal table.
 
 Optional:
@@ -108,7 +108,7 @@ inframind quick-scan -o json --progress        # JSON on stdout; stage lines on 
      └─ SAVING:   $189.24/mo  ($6.31/day wasted)
 
   🔒  Full SIGNALS + BLAST analysis for 4 more targets (23 resources)
-     →  InfraMind Cloud  https://inframind.io/#waitlist
+     →  InfraMind Cloud  rafaelhdsg.github.io/inframind-cli
 
   ─── INSIGHT ────────────────────────────────────────────────
 
@@ -120,7 +120,7 @@ inframind quick-scan -o json --progress        # JSON on stdout; stage lines on 
   NEXT  inframind policy simulate --resource-group <rg>  what-if analysis
 
   🔒 Full evidence report for all 96 resources, exportable
-  dashboards & Slack alerts → InfraMind Cloud  https://inframind.io/#waitlist
+  dashboards & Slack alerts → InfraMind Cloud  rafaelhdsg.github.io/inframind-cli
 
   ROI SNAPSHOT
   ============

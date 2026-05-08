@@ -15,7 +15,7 @@ func TestCloudCTA_roiVariant(t *testing.T) {
 	if !strings.Contains(cta, "Lock in founding price") {
 		t.Fatalf("ROI CTA missing founding-price copy: %q", cta)
 	}
-	if !strings.Contains(cta, "#waitlist") && !strings.Contains(cta, "inframind.io") {
+	if !strings.Contains(cta, "#waitlist") && !strings.Contains(cta, "rafaelhdsg.github.io") {
 		t.Fatalf("ROI CTA missing conversion URL: %q", cta)
 	}
 }

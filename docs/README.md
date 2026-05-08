@@ -19,15 +19,23 @@ The page will be live at `https://rafaelhdsg.github.io/inframind-cli/` within a 
 2. The `CNAME` file in this folder is already configured for `inframind.io`
 3. In **Settings → Pages → Custom domain**, enter `inframind.io` and enable **Enforce HTTPS**
 
-## Waitlist form setup (Formspree)
+## Waitlist form (Formspree)
 
-1. Create a free account at [formspree.io](https://formspree.io)
-2. Create a new form — you'll get an endpoint like `https://formspree.io/f/xABcDeFg`
-3. Replace `YOUR_FORM_ID` in `index.html` with your form ID:
-   ```
-   <form ... action="https://formspree.io/f/xABcDeFg" method="POST">
-   ```
-4. Formspree free tier: 50 submissions/month, email notifications included
+The waitlist form in `index.html` is already wired to a Formspree
+endpoint owned by the project. Formspree free tier covers 50
+submissions/month with email notifications.
+
+If you fork the project and want submissions to land in your own
+inbox, replace the form ID in `index.html`:
+
+```html
+<form ... action="https://formspree.io/f/<your-form-id>" method="POST">
+```
+
+Recommended Formspree settings (free tier): enable **Submission
+Archive** and turn on **CAPTCHA** under Settings → Spam Protection.
+Allowed-domain restrictions are paid-only, so CAPTCHA is the main
+defence against drive-by spam on the form ID.
 
 ## Files
 

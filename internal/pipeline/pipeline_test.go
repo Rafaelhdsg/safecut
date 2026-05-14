@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 // fakeProvider implements Provider, MetricsProvider, HierarchyProvider, and SafetyProvider

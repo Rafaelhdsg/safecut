@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 // ProgressFunc is called by the collector to report progress.

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 // fakeProvider is a minimal Provider + MetricsProvider double so the

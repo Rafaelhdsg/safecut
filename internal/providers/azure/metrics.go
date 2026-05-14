@@ -8,8 +8,8 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/monitor/azquery"
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 const metricsLookbackDays = 14

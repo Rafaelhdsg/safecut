@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
 )
 
 // OrphanDiskRule detects managed disks that are not attached to any VM.

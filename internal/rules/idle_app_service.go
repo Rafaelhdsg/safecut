@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
 )
 
 // IdleAppServiceRule detects App Services on paid tiers that are stopped

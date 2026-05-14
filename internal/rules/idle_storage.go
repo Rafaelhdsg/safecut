@@ -3,7 +3,7 @@ package rules
 import (
 	"fmt"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
 )
 
 // IdleStorageAccountRule flags storage accounts that lack access tracking,

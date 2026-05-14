@@ -3,10 +3,10 @@ package rules
 import (
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/discovery"
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/discovery"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 func TestReservedInstanceRule_steadyRunningVM_flagged(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/discovery"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/discovery"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
 )
 
 // fakePricing is a deterministic pricing provider for rule tests.

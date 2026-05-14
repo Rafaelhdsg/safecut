@@ -5,10 +5,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/defaults"
-	"github.com/Rafaelhdsg/inframind-cli/internal/telemetry"
-	"github.com/Rafaelhdsg/inframind-cli/internal/version"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/internal/defaults"
+	"github.com/Rafaelhdsg/safecut/internal/telemetry"
+	"github.com/Rafaelhdsg/safecut/internal/version"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 	"github.com/spf13/cobra"
 )
 
@@ -18,16 +18,16 @@ var cmdStartTime time.Time
 var DefaultResourceTypes = defaults.DefaultResourceTypes
 
 var rootCmd = &cobra.Command{
-	Use:   "inframind",
-	Short: "Decision engine for cloud infrastructure — read-only, safe, explainable",
-	Long: `InfraMind CLI — Find idle resources, simulate changes safely, and stop
+	Use:   "safecut",
+	Short: "The cuts you'd defend at standup — read-only, safe, explainable",
+	Long: `SafeCut CLI — Find idle resources, simulate changes safely, and stop
 paying for what you're not using. 100% read-only. Nothing is modified. Ever.
 
   quick-scan         Instant scan — find waste fast (use --resource-group to narrow scope)
   policy simulate    What-if analysis before changing anything
-  apply [Cloud]      Automate optimizations via InfraMind Cloud
+  apply [Cloud]      Automate optimizations via SafeCut Cloud
 
-InfraMind runs a 6-layer pipeline (Discovery → Pricing → Graph → Engine →
+SafeCut runs a 6-layer pipeline (Discovery → Pricing → Graph → Engine →
 Simulation → Forecast) and explains every recommendation with signals,
 blast radius, and confidence scoring.`,
 	Version: version.Full(),
@@ -69,10 +69,10 @@ func printFirstRunNotice() {
 
 	w := os.Stderr
 	fmt.Fprintln(w)
-	fmt.Fprintf(w, "  %s\n", report.Header("Welcome to InfraMind CLI"))
+	fmt.Fprintf(w, "  %s\n", report.Header("Welcome to SafeCut CLI"))
 	fmt.Fprintf(w, "  %s\n", report.Dim("========================"))
 	fmt.Fprintln(w)
-	fmt.Fprintf(w, "  InfraMind analyzes your infrastructure %s.\n", report.BoldGreen("read-only"))
+	fmt.Fprintf(w, "  SafeCut analyzes your infrastructure %s.\n", report.BoldGreen("read-only"))
 	fmt.Fprintf(w, "  %s. Ever.\n", report.Bold("Nothing is modified"))
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, "  %s\n", report.Dim("Your workflow:"))
@@ -87,11 +87,11 @@ func printFirstRunNotice() {
 	fmt.Fprintf(w, "    %s  %s  %s\n",
 		report.Cyan("apply"),
 		report.Dim("→"),
-		report.Dim("automate via InfraMind Cloud"))
+		report.Dim("automate via SafeCut Cloud"))
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, "  %s\n", report.Bold("Telemetry"))
 	fmt.Fprintf(w, "  %s\n", report.Dim("---------"))
-	fmt.Fprintf(w, "  %s\n", report.Dim("We send a minimal, anonymous event per scan to improve InfraMind:"))
+	fmt.Fprintf(w, "  %s\n", report.Dim("We send a minimal, anonymous event per scan to improve SafeCut:"))
 	fmt.Fprintf(w, "    %s anonymous installation_id (random UUID, not tied to you or Azure)\n", report.Dim("·"))
 	fmt.Fprintf(w, "    %s command name (e.g. \"quick-scan\", \"policy simulate\")\n", report.Dim("·"))
 	fmt.Fprintf(w, "    %s CLI version, OS, architecture\n", report.Dim("·"))
@@ -107,10 +107,10 @@ func printFirstRunNotice() {
 	fmt.Fprintf(w, "  Installation ID: %s\n", report.Dim(cfg.InstallationID))
 	fmt.Fprintf(w, "  %s  %s\n",
 		report.Yellow("Opt out anytime:"),
-		report.Bold("inframind config --telemetry disable"))
+		report.Bold("safecut config --telemetry disable"))
 	fmt.Fprintf(w, "  %s  %s\n",
 		report.Dim("Honored env vars:"),
-		report.Dim("INFRAMIND_NO_TELEMETRY=1 or DO_NOT_TRACK=1"))
+		report.Dim("SAFECUT_NO_TELEMETRY=1 or DO_NOT_TRACK=1"))
 	fmt.Fprintln(w)
 }
 

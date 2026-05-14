@@ -1,12 +1,12 @@
 package forecast
 
-import "github.com/Rafaelhdsg/inframind-cli/internal/simulation"
+import "github.com/Rafaelhdsg/safecut/internal/simulation"
 
 // Projection holds cost-saving projections over a time period.
 //
 // TotalProjectedSavings is the monthly saving extrapolated over `Months`.
 // It does NOT model compounding, inflation, implementation cost, or the
-// cost of InfraMind itself — it's a straight multiplication. The field
+// cost of SafeCut itself — it's a straight multiplication. The field
 // used to be called `ROI`, but that name was misleading: true ROI would
 // be (gain - cost) / cost. We renamed it for v1.0 so the CLI output
 // matches what the number actually represents.

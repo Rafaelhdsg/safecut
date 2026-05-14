@@ -6,14 +6,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/version"
+	"github.com/Rafaelhdsg/safecut/internal/version"
 	"github.com/posthog/posthog-go"
 )
 
 const posthogEndpoint = "https://us.i.posthog.com"
 
 func posthogAPIKey() string {
-	return os.Getenv("INFRAMIND_POSTHOG_KEY")
+	return os.Getenv("SAFECUT_POSTHOG_KEY")
 }
 
 var (
@@ -165,7 +165,7 @@ func CTAShown(tier, context string, monthlySavings float64) {
 }
 
 // CTAClicked records that the user invoked a specific CTA (e.g. ran
-// `inframind upgrade --start-trial solo`). action is one of
+// `safecut upgrade --start-trial solo`). action is one of
 // "start_trial", "book_demo", "partner_apply", "open_pricing".
 func CTAClicked(tier, action, context string) {
 	Track("cta_clicked", map[string]interface{}{
@@ -200,7 +200,7 @@ func savingsBucket(monthlySavings float64) string {
 }
 
 func envDisabled() bool {
-	for _, key := range []string{"INFRAMIND_NO_TELEMETRY", "DO_NOT_TRACK"} {
+	for _, key := range []string{"SAFECUT_NO_TELEMETRY", "DO_NOT_TRACK"} {
 		if v := os.Getenv(key); v != "" && v != "0" && strings.ToLower(v) != "false" {
 			return true
 		}

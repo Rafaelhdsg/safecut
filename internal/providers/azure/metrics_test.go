@@ -3,7 +3,7 @@ package azure
 import (
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
 )
 
 // TestMinObservedDays covers the v1.0 fix that made ObservedDays the

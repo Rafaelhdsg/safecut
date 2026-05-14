@@ -2,7 +2,7 @@ package engine
 
 import "strings"
 
-// PolicyMode defines what InfraMind is allowed to DO with a resource.
+// PolicyMode defines what SafeCut is allowed to DO with a resource.
 type PolicyMode string
 
 const (
@@ -94,11 +94,11 @@ func BumpRisk(r RiskLevel, n int) RiskLevel {
 	return RiskLevel(bumped)
 }
 
-// Tag keys recognized by InfraMind (case-insensitive).
+// Tag keys recognized by SafeCut (case-insensitive).
 var (
-	modeTags        = []string{"inframind-mode", "inframind:mode", "inframind-ignore", "inframind:ignore", "inframind-lock", "inframind:lock"}
-	criticalityTags = []string{"inframind-criticality", "inframind:criticality"}
-	externalTags    = []string{"inframind-external", "inframind:external"}
+	modeTags        = []string{"safecut-mode", "safecut:mode", "safecut-ignore", "safecut:ignore", "safecut-lock", "safecut:lock"}
+	criticalityTags = []string{"safecut-criticality", "safecut:criticality"}
+	externalTags    = []string{"safecut-external", "safecut:external"}
 )
 
 var truthyValues = map[string]bool{
@@ -114,7 +114,7 @@ func parseMode(tags map[string]string) PolicyMode {
 				continue
 			}
 			val := strings.ToLower(strings.TrimSpace(v))
-			if key == "inframind-mode" || key == "inframind:mode" {
+			if key == "safecut-mode" || key == "safecut:mode" {
 				switch val {
 				case "ignore":
 					return ModeIgnore

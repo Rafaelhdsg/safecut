@@ -3,11 +3,11 @@ package rules
 import (
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/discovery"
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/graph"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/discovery"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/graph"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 // isType does a case-insensitive resource type match.

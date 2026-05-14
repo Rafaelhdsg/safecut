@@ -8,13 +8,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pipeline"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers/azure"
-	"github.com/Rafaelhdsg/inframind-cli/internal/telemetry"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/progress"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/pipeline"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/providers/azure"
+	"github.com/Rafaelhdsg/safecut/internal/telemetry"
+	"github.com/Rafaelhdsg/safecut/pkg/progress"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 	"github.com/spf13/cobra"
 )
 
@@ -31,9 +31,9 @@ var policySimulateCmd = &cobra.Command{
 affect resources, recommendations, and cost savings — without applying anything.
 
 Examples:
-  inframind policy simulate --resource-group prod-sap --set criticality=high
-  inframind policy simulate --subscription my-sub --set mode=protect --set external=true
-  inframind policy simulate --resource-group dev-test --set template=development
+  safecut policy simulate --resource-group prod-sap --set criticality=high
+  safecut policy simulate --subscription my-sub --set mode=protect --set external=true
+  safecut policy simulate --resource-group dev-test --set template=development
 
 Prefer --resource-group when possible: subscription-wide simulation scans the
 entire subscription and can take much longer on large environments.`,
@@ -180,18 +180,18 @@ func parseSets(sets []string) (map[string]string, error) {
 
 var policyLintCmd = &cobra.Command{
 	Use:   "lint",
-	Short: "Validate inframind-* tag values and detect drift (no metrics)",
+	Short: "Validate safecut-* tag values and detect drift (no metrics)",
 	Long: `Runs discovery + policy resolution only — no metrics, no rules, no simulation.
 Fast enough to gate in CI.
 
-Flags any resource whose inframind-mode / criticality / template / external
+Flags any resource whose safecut-mode / criticality / template / external
 tag carries an unsupported value, plus drift between resource-level tags and
 their RG / subscription parent.
 
 Examples:
-  inframind policy lint
-  inframind policy lint --resource-group prod-sap
-  inframind policy lint -o json`,
+  safecut policy lint
+  safecut policy lint --resource-group prod-sap
+  safecut policy lint -o json`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		rg, _ := cmd.Flags().GetString("resource-group")
 		outputFormat, _ := cmd.Flags().GetString("output")

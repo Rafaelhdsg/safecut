@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/discovery"
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/discovery"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 // BUG #3 regression — unknown lock state on an orphan disk must NOT

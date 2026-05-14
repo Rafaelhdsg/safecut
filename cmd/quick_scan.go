@@ -9,15 +9,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/history"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pipeline"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing_tiers"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers/azure"
-	"github.com/Rafaelhdsg/inframind-cli/internal/telemetry"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/progress"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/history"
+	"github.com/Rafaelhdsg/safecut/internal/pipeline"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/pricing_tiers"
+	"github.com/Rafaelhdsg/safecut/internal/providers/azure"
+	"github.com/Rafaelhdsg/safecut/internal/telemetry"
+	"github.com/Rafaelhdsg/safecut/pkg/progress"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 	"github.com/spf13/cobra"
 )
 
@@ -264,7 +264,7 @@ func renderQuickScan(out *pipeline.Output, subscriptionID string, previous *hist
 	if monthlySavings == 0 {
 		fmt.Println()
 		fmt.Println(boxTop())
-		fmt.Println(boxRow(report.BoldCyan("INFRAMIND") + "  |  " + report.BoldGreen("CLEAN INFRASTRUCTURE")))
+		fmt.Println(boxRow(report.BoldCyan("SAFECUT") + "  |  " + report.BoldGreen("CLEAN INFRASTRUCTURE")))
 		fmt.Println(boxBot())
 		fmt.Printf("\n  %s\n\n", report.Green("No waste detected. Your infrastructure looks clean."))
 		return
@@ -342,7 +342,7 @@ func renderQuickScan(out *pipeline.Output, subscriptionID string, previous *hist
 	fmt.Printf("  %s  %s  %s\n\n",
 		report.Dim("📈"),
 		report.Dim("Full 90-day trend with anomaly detection →"),
-		report.Bold("InfraMind Cloud")+" "+report.Dim(report.WaitlistURL))
+		report.Bold("SafeCut Cloud")+" "+report.Dim(report.WaitlistURL))
 
 	// ── TOP TARGETS ──
 	sectionSep("TARGETS")
@@ -356,7 +356,7 @@ func renderQuickScan(out *pipeline.Output, subscriptionID string, previous *hist
 	fmt.Printf("  %s\n", report.Dim(strings.Repeat("─", 62)))
 	fmt.Printf("  %s  %s\n",
 		report.Section("NEXT"),
-		report.Cyan("inframind policy simulate --resource-group <rg> --set mode=protect")+
+		report.Cyan("safecut policy simulate --resource-group <rg> --set mode=protect")+
 			" "+report.Dim("what-if analysis"))
 	fmt.Println()
 
@@ -370,14 +370,14 @@ func renderQuickScan(out *pipeline.Output, subscriptionID string, previous *hist
 		fmt.Printf("     %s  %s  %s\n\n",
 			report.Dim("→"),
 			report.Dim("Cross-subscription scanning & unified dashboard →"),
-			report.Bold("InfraMind Cloud")+" "+report.Dim(report.WaitlistURL))
+			report.Bold("SafeCut Cloud")+" "+report.Dim(report.WaitlistURL))
 	}
 
 	fmt.Printf("  %s Full evidence report for all %d resources, exportable\n",
 		report.Dim("🔒"),
 		totalResources)
 	fmt.Printf("  %s\n\n",
-		report.Dim("dashboards & Slack alerts →")+" "+report.Bold("InfraMind Cloud")+" "+report.Dim(report.WaitlistURL))
+		report.Dim("dashboards & Slack alerts →")+" "+report.Bold("SafeCut Cloud")+" "+report.Dim(report.WaitlistURL))
 
 	renderROISnapshot(monthlySavings, len(applied), rgCount)
 }
@@ -407,18 +407,18 @@ func renderROISnapshot(monthlySavings float64, recCount, rgCount int) {
 		fmt.Printf("  %s Automate %s in one click  →  %s\n",
 			report.Dim("•"),
 			report.Bold(fmt.Sprintf("%d recommendation(s)", recCount)),
-			report.Cyan("inframind upgrade --start-trial solo"))
+			report.Cyan("safecut upgrade --start-trial solo"))
 	}
 	if rgCount >= 2 {
 		fmt.Printf("  %s Managing %d resource groups / clients?  →  %s\n",
 			report.Dim("•"),
 			rgCount,
-			report.Cyan("inframind upgrade --partner"))
+			report.Cyan("safecut upgrade --partner"))
 	}
 	fmt.Printf("  %s Enterprise alternative: pay %s (greater applies).  %s\n",
 		report.Dim("•"),
 		report.Bold("8% of verified savings"),
-		report.Cyan("inframind upgrade --book-demo"))
+		report.Cyan("safecut upgrade --book-demo"))
 	fmt.Println()
 }
 
@@ -587,7 +587,7 @@ func renderPipelineBlock(out *pipeline.Output, totalResources, idleCount int, su
 
 func renderDashboard(yearlySavings float64, safeCount, safeTotal, safetyPct int, confidenceLabel string, autoExecCount int, rgCount int, singleRGName string) {
 	headline := buildDynamicHeadline(yearlySavings, safeCount, safeTotal, rgCount, singleRGName)
-	title := report.BoldCyan("INFRAMIND") + "  |  " + report.BoldWhite(headline)
+	title := report.BoldCyan("SAFECUT") + "  |  " + report.BoldWhite(headline)
 	savingsLine := report.Bold("ANNUAL SAVINGS") + "    " + report.BoldGreen(fmt.Sprintf("%s / yr", report.Money0(yearlySavings)))
 	safetyLine := report.Bold("SAFETY SCORE") + "      " +
 		report.BoldGreen(fmt.Sprintf("%d/%d safe", safeCount, safeTotal)) +
@@ -665,7 +665,7 @@ func renderTargets(groups []actionGroup, out *pipeline.Output) {
 				lockedCount, lockedResources, lockedSaving)))
 		fmt.Printf("     %s  %s\n\n",
 			report.Dim("→"),
-			report.Bold("InfraMind Cloud")+" "+report.Dim(report.WaitlistURL))
+			report.Bold("SafeCut Cloud")+" "+report.Dim(report.WaitlistURL))
 	}
 
 	if len(reviewOnly) > 0 {
@@ -1097,7 +1097,7 @@ func renderInsight(out *pipeline.Output) {
 		fmt.Printf("  Your infrastructure is running %s — no governance tags detected.\n",
 			report.BoldRed("\"blind\""))
 		fmt.Printf("  Safety filters are defaulted to conservative. Run %s to\n",
-			report.Cyan("inframind policy simulate"))
+			report.Cyan("safecut policy simulate"))
 		fmt.Printf("  unlock up to %s more aggressive savings.\n\n",
 			report.BoldGreen("2x"))
 		return
@@ -1139,7 +1139,7 @@ func renderInsight(out *pipeline.Output) {
 		fmt.Printf("  %s %s\n", report.Green("✓"), report.Section("CLEAN INFRASTRUCTURE"))
 		fmt.Printf("  No significant waste detected. Re-run periodically or\n")
 		fmt.Printf("  get continuous monitoring with %s\n\n",
-			report.Bold("InfraMind Cloud")+" "+report.Dim(report.WaitlistURL))
+			report.Bold("SafeCut Cloud")+" "+report.Dim(report.WaitlistURL))
 	}
 }
 
@@ -1713,7 +1713,7 @@ func exportQuickScanMD(out *pipeline.Output, subscriptionID, path string) {
 	}
 
 	var b strings.Builder
-	b.WriteString("# InfraMind Scan Report\n\n")
+	b.WriteString("# SafeCut Scan Report\n\n")
 	b.WriteString(fmt.Sprintf("**Subscription:** `%s`\n", subscriptionID))
 	b.WriteString(fmt.Sprintf("**Date:** %s\n", time.Now().Format("2006-01-02 15:04 MST")))
 	b.WriteString(fmt.Sprintf("**Resources scanned:** %d\n\n", totalResources))
@@ -1759,7 +1759,7 @@ func exportQuickScanMD(out *pipeline.Output, subscriptionID, path string) {
 	b.WriteString("---\n\n")
 	b.WriteString("## Detailed Analysis\n\n")
 	b.WriteString("Full per-resource breakdown with **SIGNALS**, **BLAST RADIUS**, and **evidence logs**\n")
-	b.WriteString("is available with **InfraMind Cloud**.\n\n")
+	b.WriteString("is available with **SafeCut Cloud**.\n\n")
 	b.WriteString(fmt.Sprintf("> [Join the waitlist](%s) to unlock exportable PDF/HTML reports with branding,\n", report.WaitlistURL))
 	b.WriteString("> Slack integration, and continuous monitoring dashboards.\n")
 
@@ -1773,7 +1773,7 @@ func exportQuickScanMD(out *pipeline.Output, subscriptionID, path string) {
 		report.Bold(path))
 	fmt.Printf("  %s  Full detailed report with SIGNALS + BLAST → %s  %s\n\n",
 		report.Dim("🔒"),
-		report.Bold("InfraMind Cloud"),
+		report.Bold("SafeCut Cloud"),
 		report.Dim(report.WaitlistURL))
 }
 

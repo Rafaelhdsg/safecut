@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/graph"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/graph"
 )
 
 // SuppressedRec records a recommendation that was dropped from the

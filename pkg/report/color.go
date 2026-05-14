@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing_tiers"
+	"github.com/Rafaelhdsg/safecut/internal/pricing_tiers"
 )
 
 var colorEnabled = detectTerminal()
@@ -157,7 +157,7 @@ const WaitlistURL = pricing_tiers.WaitlistURL
 // with 0 when you don't have savings context (e.g. policy-sim footer).
 //
 // Copy intentionally says "lock in founding price" rather than "start
-// trial": InfraMind Cloud checkout is not live until v1.1, and the
+// trial": SafeCut Cloud checkout is not live until v1.1, and the
 // waitlist is the honest CTA while the product catches up to the pitch.
 func CloudCTA(monthlySavings float64) string {
 	if monthlySavings >= pricing_tiers.SoloMonthlyUSD {

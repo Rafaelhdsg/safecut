@@ -3,19 +3,19 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/telemetry"
+	"github.com/Rafaelhdsg/safecut/internal/telemetry"
 	"github.com/spf13/cobra"
 )
 
 var configCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Manage CLI settings and telemetry preferences",
-	Long: `View and modify InfraMind CLI settings.
+	Long: `View and modify SafeCut CLI settings.
 
 Examples:
-  inframind config --telemetry status    Show telemetry state and what is collected
-  inframind config --telemetry disable   Opt out of anonymous telemetry
-  inframind config --telemetry enable    Opt back in`,
+  safecut config --telemetry status    Show telemetry state and what is collected
+  safecut config --telemetry disable   Opt out of anonymous telemetry
+  safecut config --telemetry enable    Opt back in`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		tel, _ := cmd.Flags().GetString("telemetry")
 		if tel == "" {
@@ -49,7 +49,7 @@ func showTelemetryStatus() error {
 		fmt.Printf("  Config path:     %s\n", telemetry.ConfigPath())
 		fmt.Println()
 		fmt.Println("  Disable before first run:")
-		fmt.Println("    export INFRAMIND_NO_TELEMETRY=1")
+		fmt.Println("    export SAFECUT_NO_TELEMETRY=1")
 		return nil
 	}
 
@@ -77,7 +77,7 @@ func showTelemetryStatus() error {
 	fmt.Println("    - IP addresses")
 	fmt.Println()
 	fmt.Println("  Override with environment variables:")
-	fmt.Println("    INFRAMIND_NO_TELEMETRY=1  or  DO_NOT_TRACK=1")
+	fmt.Println("    SAFECUT_NO_TELEMETRY=1  or  DO_NOT_TRACK=1")
 
 	return nil
 }
@@ -95,7 +95,7 @@ func enableTelemetry() error {
 	if err := telemetry.Enable(); err != nil {
 		return fmt.Errorf("failed to enable telemetry: %w", err)
 	}
-	fmt.Println("Telemetry enabled. Thank you for helping improve InfraMind.")
+	fmt.Println("Telemetry enabled. Thank you for helping improve SafeCut.")
 	fmt.Printf("Config saved to %s\n", telemetry.ConfigPath())
 	return nil
 }

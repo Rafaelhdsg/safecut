@@ -25,7 +25,7 @@ type cacheEntry struct {
 }
 
 // CacheDir returns the on-disk cache directory for pricing records.
-// Exported so CLI health checks (inframind doctor) can inspect cache state.
+// Exported so CLI health checks (safecut doctor) can inspect cache state.
 func CacheDir() string { return cacheDir() }
 
 // CacheTTL is the validity window used by pricing cache reads.
@@ -38,13 +38,13 @@ func cacheDir() string {
 	}
 	switch runtime.GOOS {
 	case "darwin":
-		return filepath.Join(home, "Library", "Application Support", "inframind", "pricing")
+		return filepath.Join(home, "Library", "Application Support", "safecut", "pricing")
 	default:
 		cfg := os.Getenv("XDG_CONFIG_HOME")
 		if cfg == "" {
 			cfg = filepath.Join(home, ".config")
 		}
-		return filepath.Join(cfg, "inframind", "pricing")
+		return filepath.Join(cfg, "safecut", "pricing")
 	}
 }
 

@@ -48,7 +48,7 @@ type PolicyDrift struct {
 }
 
 // PolicyTemplate is a named preset that can be referenced via
-// the inframind-template tag. Scales governance across thousands
+// the safecut-template tag. Scales governance across thousands
 // of resources without tagging each one individually.
 type PolicyTemplate struct {
 	Mode         PolicyMode  `json:"mode"`
@@ -56,7 +56,7 @@ type PolicyTemplate struct {
 	ExternalDeps bool        `json:"external_deps"`
 }
 
-// BuiltinTemplates ships with InfraMind out of the box.
+// BuiltinTemplates ships with SafeCut out of the box.
 var BuiltinTemplates = map[string]PolicyTemplate{
 	"production":  {Mode: ModeProtect, Criticality: CriticalityHigh},
 	"staging":     {Mode: ModeObserve, Criticality: CriticalityMedium},
@@ -135,7 +135,7 @@ func (r *PolicyResolver) resolveLevel(resolved *ResolvedPolicy, tags map[string]
 	}
 
 	// Check template first (explicit tags override template)
-	tmplName := findTag(tags, []string{"inframind-template", "inframind:template"})
+	tmplName := findTag(tags, []string{"safecut-template", "safecut:template"})
 	if tmplName != "" {
 		if tmpl, ok := r.templates[strings.ToLower(tmplName)]; ok {
 			origin := PolicyOrigin{Source: SourceTemplate, Name: tmplName + " (via " + string(source) + ")"}
@@ -247,7 +247,7 @@ func (r *PolicyResolver) detectDrift(h TagHierarchy) []PolicyDrift {
 }
 
 func (r *PolicyResolver) resolveModeFromTags(tags map[string]string) PolicyMode {
-	tmplName := findTag(tags, []string{"inframind-template", "inframind:template"})
+	tmplName := findTag(tags, []string{"safecut-template", "safecut:template"})
 	if tmplName != "" {
 		if tmpl, ok := r.templates[strings.ToLower(tmplName)]; ok && tmpl.Mode != "" {
 			return tmpl.Mode
@@ -257,7 +257,7 @@ func (r *PolicyResolver) resolveModeFromTags(tags map[string]string) PolicyMode 
 }
 
 func (r *PolicyResolver) resolveCritFromTags(tags map[string]string) Criticality {
-	tmplName := findTag(tags, []string{"inframind-template", "inframind:template"})
+	tmplName := findTag(tags, []string{"safecut-template", "safecut:template"})
 	if tmplName != "" {
 		if tmpl, ok := r.templates[strings.ToLower(tmplName)]; ok && tmpl.Criticality != "" {
 			return tmpl.Criticality
@@ -267,7 +267,7 @@ func (r *PolicyResolver) resolveCritFromTags(tags map[string]string) Criticality
 }
 
 func (r *PolicyResolver) resolveExtFromTags(tags map[string]string) bool {
-	tmplName := findTag(tags, []string{"inframind-template", "inframind:template"})
+	tmplName := findTag(tags, []string{"safecut-template", "safecut:template"})
 	if tmplName != "" {
 		if tmpl, ok := r.templates[strings.ToLower(tmplName)]; ok && tmpl.ExternalDeps {
 			return true
@@ -277,14 +277,14 @@ func (r *PolicyResolver) resolveExtFromTags(tags map[string]string) bool {
 }
 
 func hasOverride(tags map[string]string) bool {
-	for _, key := range []string{"inframind-policy", "inframind:policy"} {
+	for _, key := range []string{"safecut-policy", "safecut:policy"} {
 		for k, v := range tags {
 			if strings.EqualFold(k, key) && strings.ToLower(strings.TrimSpace(v)) == "override" {
 				return true
 			}
 		}
 	}
-	for _, key := range []string{"inframind-inherit", "inframind:inherit"} {
+	for _, key := range []string{"safecut-inherit", "safecut:inherit"} {
 		for k, v := range tags {
 			val := strings.ToLower(strings.TrimSpace(v))
 			if strings.EqualFold(k, key) && (val == "false" || val == "no" || val == "none") {

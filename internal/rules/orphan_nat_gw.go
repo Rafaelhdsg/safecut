@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
 )
 
 // OrphanNATGatewayRule detects NAT gateways with no subnets attached.

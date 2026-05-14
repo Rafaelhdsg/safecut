@@ -6,27 +6,27 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing_tiers"
-	"github.com/Rafaelhdsg/inframind-cli/internal/telemetry"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/internal/pricing_tiers"
+	"github.com/Rafaelhdsg/safecut/internal/telemetry"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 	"github.com/spf13/cobra"
 )
 
 var upgradeCmd = &cobra.Command{
 	Use:     "upgrade",
 	Aliases: []string{"cloud"},
-	Short:   "Compare InfraMind plans and join the founding waitlist",
-	Long: `InfraMind CLI is free forever for read-only scans, policy simulate,
+	Short:   "Compare SafeCut plans and join the founding waitlist",
+	Long: `SafeCut CLI is free forever for read-only scans, policy simulate,
 policy lint, history, rightsizing, and RI suggestions — all shipping today.
-InfraMind Cloud (automation, scheduled scans, Slack alerts, white-label
+SafeCut Cloud (automation, scheduled scans, Slack alerts, white-label
 reports) ships with v1.1 and is currently in founding-customer early access.
 
 Use the flags to jump straight to the right conversion path:
 
-  inframind upgrade --start-trial solo    # Freelancer / single-sub CTO
-  inframind upgrade --start-trial team    # Startup / scale-up (up to 10 seats)
-  inframind upgrade --book-demo           # Enterprise (from $799/mo or 8% of savings)
-  inframind upgrade --partner             # MSP / consultant track (20% revshare)
+  safecut upgrade --start-trial solo    # Freelancer / single-sub CTO
+  safecut upgrade --start-trial team    # Startup / scale-up (up to 10 seats)
+  safecut upgrade --book-demo           # Enterprise (from $799/mo or 8% of savings)
+  safecut upgrade --partner             # MSP / consultant track (20% revshare)
 
 Without flags this command just prints the pricing table.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -118,7 +118,7 @@ func renderPricingTable(cmd *cobra.Command, w interface {
 	Write(p []byte) (n int, err error)
 }) {
 	fmt.Fprintln(w)
-	fmt.Fprintf(w, "  %s\n", report.Header("InfraMind Cloud — Pricing"))
+	fmt.Fprintf(w, "  %s\n", report.Header("SafeCut Cloud — Pricing"))
 	fmt.Fprintf(w, "  %s\n", report.Dim("========================="))
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, "  %s %s\n", report.BoldGreen("✓"), report.Bold("CLI is free forever — ships today"))
@@ -144,10 +144,10 @@ func renderPricingTable(cmd *cobra.Command, w interface {
 		report.Bold("Founding customer pricing locks in while we're pre-1.0. Lock yours today."))
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, "  %s\n", report.Dim("Quick actions:"))
-	fmt.Fprintf(w, "    %s inframind upgrade --start-trial solo\n", report.Dim("›"))
-	fmt.Fprintf(w, "    %s inframind upgrade --start-trial team\n", report.Dim("›"))
-	fmt.Fprintf(w, "    %s inframind upgrade --book-demo\n", report.Dim("›"))
-	fmt.Fprintf(w, "    %s inframind upgrade --partner\n", report.Dim("›"))
+	fmt.Fprintf(w, "    %s safecut upgrade --start-trial solo\n", report.Dim("›"))
+	fmt.Fprintf(w, "    %s safecut upgrade --start-trial team\n", report.Dim("›"))
+	fmt.Fprintf(w, "    %s safecut upgrade --book-demo\n", report.Dim("›"))
+	fmt.Fprintf(w, "    %s safecut upgrade --partner\n", report.Dim("›"))
 	fmt.Fprintln(w)
 }
 

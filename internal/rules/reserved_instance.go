@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/discovery"
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/discovery"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
 )
 
 // ReservedInstanceRule detects VMs that have been running consistently

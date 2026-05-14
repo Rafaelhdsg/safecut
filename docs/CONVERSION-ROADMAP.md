@@ -13,9 +13,9 @@ Status: done. Captured so we don't regress.
 - `CloudCTA(monthlySavings)` in [`pkg/report/color.go`](../pkg/report/color.go)
   swaps the generic "join waitlist" for a concrete `Solo $29/mo pays back
   in N days` footer whenever we have real savings to anchor against.
-- `inframind upgrade` renders a 4-tier table with `--start-trial`,
+- `safecut upgrade` renders a 4-tier table with `--start-trial`,
   `--book-demo`, `--partner` flags (see [`cmd/upgrade.go`](../cmd/upgrade.go)).
-- `inframind partner` preview command for the MSP track.
+- `safecut partner` preview command for the MSP track.
 - [`docs/pricing.html`](pricing.html) page with FAQ and Start-trial CTA.
 - `README.md` has a dedicated Pricing section linking to it.
 - RELEASE-CHECKLIST has a new Conversion Gate block.
@@ -33,13 +33,13 @@ Target landing window: v1.0.0 final, ~5–7 days after rc1.
      [`docs/index.html`](index.html) hero with a real counter fed by a
      `/api/founding-count` endpoint (static JSON is fine while signups are
      low).
-   - Surface the same counter in `inframind upgrade` when terminal is
+   - Surface the same counter in `safecut upgrade` when terminal is
      interactive.
 
 2. **Verified spend badge**
    - Ship an aggregate `$X M+ under management` badge driven by
      telemetry (sum of `monthly_savings_bucket` midpoints, rolling 30-day).
-   - Gate it behind `INFRAMIND_TELEMETRY` opt-in so we only aggregate
+   - Gate it behind `SAFECUT_TELEMETRY` opt-in so we only aggregate
      consenting installs.
 
 3. **Comparison table v2**
@@ -67,15 +67,15 @@ aggregate, and at least three testimonials on pricing.html.
 Goal: turn the Partner preview into a revenue line on its own.
 
 1. **White-label PDF / HTML export**
-   - Promote `inframind partner --brand --client` preview to full
+   - Promote `safecut partner --brand --client` preview to full
      output: write PDF with brand header and hide the `Powered by
-     InfraMind` footer for Partner plan.
-   - Add `inframind quick-scan --brand --client --export pdf`.
+     SafeCut` footer for Partner plan.
+   - Add `safecut quick-scan --brand --client --export pdf`.
 
 2. **Per-client subscription management**
-   - Ship a partner dashboard in InfraMind Cloud: one account, many
+   - Ship a partner dashboard in SafeCut Cloud: one account, many
      client subscriptions, per-client billing rollup.
-   - CLI command `inframind partner clients list|add|remove`.
+   - CLI command `safecut partner clients list|add|remove`.
 
 3. **Revshare portal**
    - Stripe Connect for 20% recurring revshare payouts.

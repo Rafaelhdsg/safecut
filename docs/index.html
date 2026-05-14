@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InfraMind — Decision Engine for Cloud Infrastructure</title>
-<meta name="description" content="Find idle resources, simulate changes safely, and stop paying for what you're not using. Join the waitlist for InfraMind Cloud.">
-<meta property="og:title" content="InfraMind — Stop Paying for Idle Cloud Resources">
-<meta property="og:description" content="One command. Real savings. Read-only analysis. Join the waitlist for automated cloud cost optimization.">
+<title>SafeCut — The cuts you'd defend at standup</title>
+<meta name="description" content="The only CLI that tells you what's safe to delete in your cloud, with evidence to defend the call. Read-only. No agents. No surprises.">
+<meta property="og:title" content="SafeCut — The cuts you'd defend at standup">
+<meta property="og:description" content="One command. Every recommendation backed by signals, blast radius, and confidence scoring. The verdict your CFO and your SRE can both trust.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://rafaelhdsg.github.io/inframind-cli/">
+<meta property="og:url" content="https://safecut.dev/">
+<meta property="og:image" content="https://safecut.dev/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -89,8 +90,15 @@
     margin-bottom: 1.5rem;
   }
   .hero h1 .highlight { color: var(--cyan); }
+  .hero .tagline-strap {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem; color: var(--cyan);
+    letter-spacing: 0.02em;
+    margin-bottom: 1rem;
+    text-transform: lowercase;
+  }
   .hero p {
-    font-size: 1.2rem; color: var(--text-muted); max-width: 560px;
+    font-size: 1.2rem; color: var(--text-muted); max-width: 620px;
     margin-bottom: 2.5rem;
   }
   .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
@@ -427,13 +435,14 @@
 <section class="hero">
   <div class="hero-badge">Open Source CLI &mdash; Cloud Coming Soon</div>
   <h1>Stop paying for <span class="highlight">idle cloud resources</span></h1>
+  <p class="tagline-strap">The cuts you'd defend at standup.</p>
   <p>
-    One command finds orphaned disks, zombie VMs, and wasted IPs.
-    Simulate changes safely before touching anything. Real savings; runtime depends on how large your subscription is.
+    One command finds orphaned disks, zombie VMs, and wasted IPs &mdash; and tells you which ones are <strong>safe</strong> to act on,
+    with signals, blast radius, and confidence scoring behind every recommendation.
   </p>
   <div class="hero-cta">
     <a href="pricing.html" class="btn btn-primary">See plans & start trial</a>
-    <a href="https://github.com/Rafaelhdsg/inframind-cli" class="btn btn-ghost" target="_blank" rel="noopener">Run the free CLI</a>
+    <a href="https://github.com/Rafaelhdsg/safecut" class="btn btn-ghost" target="_blank" rel="noopener">Run the free CLI</a>
   </div>
 </section>
 
@@ -445,19 +454,19 @@
   </div>
   <div class="social-tag">
     Open-source CLI, read-only by design &mdash; audit every API call in
-    <a href="https://github.com/Rafaelhdsg/inframind-cli" style="color:var(--cyan)">the source</a>.
+    <a href="https://github.com/Rafaelhdsg/safecut" style="color:var(--cyan)">the source</a>.
     &nbsp;·&nbsp; No account required to try.
   </div>
 </section>
 
 <!-- MINI COMPARE -->
 <section class="compare-mini" id="compare-mini">
-  <h3>How InfraMind compares to what you already have</h3>
+  <h3>How SafeCut compares to what you already have</h3>
   <table class="compare-table">
     <thead>
       <tr>
         <th>Feature</th>
-        <th class="us">InfraMind</th>
+        <th class="us">SafeCut</th>
         <th>Azure Advisor</th>
         <th>Cloudability / Apptio</th>
       </tr>
@@ -505,10 +514,10 @@
       <div class="terminal-dot r"></div>
       <div class="terminal-dot y"></div>
       <div class="terminal-dot g"></div>
-      <div class="terminal-title">~/ &mdash; inframind</div>
+      <div class="terminal-title">~/ &mdash; safecut</div>
     </div>
     <div class="terminal-body" id="terminal-demo">
-<div class="tl"><span class="prompt">$</span> <span class="cmd">inframind quick-scan</span></div>
+<div class="tl"><span class="prompt">$</span> <span class="cmd">safecut quick-scan</span></div>
 <div class="tl">&nbsp;</div>
 <div class="tl">  <span class="h spin">&#x28F7;</span> <span class="h">Scanning subscription a1b2c3d4...</span> <span class="d">14s</span></div>
 <div class="tl">    <span class="d">[PRICING] Loading Azure Retail Prices</span></div>
@@ -524,7 +533,7 @@
 <div class="tl phase2">  <span class="d">&mdash;&mdash;&mdash; DASHBOARD &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span></div>
 <div class="tl phase2">&nbsp;</div>
 <div class="tl phase2">  <span class="d">+----------------------------------------------------------+</span></div>
-<div class="tl phase2">  |  <span class="h">INFRAMIND</span>  |  <span class="b">$4,212/yr waste across 3 RGs &mdash; 95% safe</span>  |</div>
+<div class="tl phase2">  |  <span class="h">SAFECUT</span>  |  <span class="b">$4,212/yr waste across 3 RGs &mdash; 95% safe</span>  |</div>
 <div class="tl phase2">  <span class="d">+----------------------------------------------------------+</span></div>
 <div class="tl phase2">  |  <span class="b">ANNUAL SAVINGS</span>    <span class="g">$4,212 / yr</span>                          |</div>
 <div class="tl phase2">  |  <span class="b">SAFETY SCORE</span>      <span class="g">36/38 safe</span>  <span class="h">[HIGH CONFIDENCE]</span>    |</div>
@@ -551,7 +560,7 @@
 <div class="tl phase2">     &#9492;&#9472; <span class="d">SAVING: </span>  <span class="g">$189.24/mo</span>  <span class="r">($6.31/day wasted)</span></div>
 <div class="tl phase2">&nbsp;</div>
 <div class="tl phase2">  <span class="d">&#x1F512;  Full SIGNALS + BLAST analysis for 4 more targets (23 resources)</span></div>
-<div class="tl phase2">     <span class="d">&rarr;</span>  <span class="b">InfraMind Cloud</span>  <span class="d">rafaelhdsg.github.io/inframind-cli</span></div>
+<div class="tl phase2">     <span class="d">&rarr;</span>  <span class="b">SafeCut Cloud</span>  <span class="d">safecut.dev</span></div>
 <div class="tl phase2">&nbsp;</div>
 <div class="tl phase2">  <span class="d">&mdash;&mdash;&mdash; INSIGHT &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span></div>
 <div class="tl phase2">&nbsp;</div>
@@ -560,19 +569,19 @@
 <div class="tl phase2">  <span class="h">'lab-testing'</span>. Apply the <span class="h">'development'</span> policy template.</div>
 <div class="tl phase2">&nbsp;</div>
 <div class="tl phase2">  <span class="d">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span></div>
-<div class="tl phase2">  <span class="b">NEXT</span>  <span class="h">inframind policy simulate --resource-group &lt;rg&gt;</span> <span class="d">what-if analysis</span></div>
+<div class="tl phase2">  <span class="b">NEXT</span>  <span class="h">safecut policy simulate --resource-group &lt;rg&gt;</span> <span class="d">what-if analysis</span></div>
 <div class="tl phase2">&nbsp;</div>
 <div class="tl phase2">  <span class="d">&#x1F512; Full evidence report for all 96 resources, exportable</span></div>
-<div class="tl phase2">  <span class="d">dashboards &amp; Slack alerts &rarr;</span> <span class="b">InfraMind Cloud</span></div>
+<div class="tl phase2">  <span class="d">dashboards &amp; Slack alerts &rarr;</span> <span class="b">SafeCut Cloud</span></div>
     </div>
   </div>
 </section>
 
 <!-- FEATURES -->
 <section class="features" id="features">
-  <h2>What InfraMind does</h2>
+  <h2>What SafeCut does</h2>
   <p class="subtitle">
-    A 5-layer decision engine that doesn't just find waste &mdash; it tells you what's safe to act on, and what to leave alone.
+    A decision engine that doesn't just find waste &mdash; it tells you what's safe to delete, with the evidence to defend it.
   </p>
   <div class="feature-grid">
     <div class="feature-card">
@@ -583,7 +592,7 @@
     <div class="feature-card">
       <div class="feature-icon">&#x1F6E1;</div>
       <h3>Safe-Lock Governance</h3>
-      <p>Tag resources with protection modes (ignore, observe, protect), criticality levels, and external dependency flags. InfraMind respects them.</p>
+      <p>Tag resources with protection modes (ignore, observe, protect), criticality levels, and external dependency flags. SafeCut respects them.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">&#x1F9EA;</div>
@@ -610,7 +619,7 @@
 
 <!-- COMPARISON: FREE vs CLOUD -->
 <section class="comparison" id="compare">
-  <h2>Free CLI vs InfraMind Cloud</h2>
+  <h2>Free CLI vs SafeCut Cloud</h2>
   <p class="subtitle">The CLI gives you the diagnosis. The Cloud gives you the cure.</p>
   <div class="compare-grid">
     <div class="compare-col">
@@ -643,7 +652,7 @@
 <!-- MULTI-CLOUD TEASER -->
 <section class="clouds" id="clouds" style="padding:3rem 1.5rem;text-align:center;">
   <h2 style="margin-bottom:0.5rem;">Azure today. AWS &amp; GCP next.</h2>
-  <p style="color:var(--text-dim);margin-bottom:2rem;">InfraMind v1.0 ships Azure-first. The engine, rules, and policy model are cloud-agnostic.</p>
+  <p style="color:var(--text-dim);margin-bottom:2rem;">SafeCut v1.0 ships Azure-first. The engine, rules, and policy model are cloud-agnostic.</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;max-width:900px;margin:0 auto;">
     <div style="border:1px solid var(--border);border-radius:12px;padding:1.25rem;">
       <div style="font-size:1.5rem;">Azure</div>
@@ -665,7 +674,7 @@
 
 <!-- WAITLIST -->
 <section class="waitlist" id="waitlist">
-  <h2>Get early access to InfraMind Cloud</h2>
+  <h2>Get early access to SafeCut Cloud</h2>
   <p class="subtitle">
     Automated scans. Scheduled reports. Team dashboards.<br>
     The CLI is just the beginning.
@@ -689,7 +698,7 @@
       <label for="blocker">What's your biggest blocker for automating cloud cleanup today?</label>
       <textarea id="blocker" name="blocker" placeholder="e.g. We don't know what's safe to delete, no visibility into idle resources, compliance concerns..."></textarea>
     </div>
-    <input type="hidden" name="_subject" value="New InfraMind Waitlist Signup">
+    <input type="hidden" name="_subject" value="New SafeCut Waitlist Signup">
     <button type="submit" class="btn-submit">Join the Waitlist</button>
     <p class="form-note">No spam. We'll email you when early access opens.</p>
   </form>
@@ -700,11 +709,11 @@
   <h2>Try the CLI now &mdash; free and open source</h2>
   <p>Works on macOS, Linux, and Windows. Zero config required.</p>
   <div class="install-commands">
-    <div class="install-cmd" onclick="copyCmd(this, 'brew install Rafaelhdsg/tap/inframind')">
+    <div class="install-cmd" onclick="copyCmd(this, 'brew install Rafaelhdsg/tap/safecut')">
       <span class="copied">Copied!</span>
-      brew install Rafaelhdsg/tap/inframind
+      brew install Rafaelhdsg/tap/safecut
     </div>
-    <div class="install-cmd" onclick="copyCmd(this, 'curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/inframind-cli/main/install.sh | bash')">
+    <div class="install-cmd" onclick="copyCmd(this, 'curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/safecut/main/install.sh | bash')">
       <span class="copied">Copied!</span>
       curl -fsSL .../install.sh | bash
     </div>
@@ -714,8 +723,8 @@
 <!-- FOOTER -->
 <footer>
   <p>
-    InfraMind &copy; 2026 &mdash;
-    <a href="https://github.com/Rafaelhdsg/inframind-cli" target="_blank" rel="noopener">GitHub</a>
+    SafeCut &copy; 2026 &mdash;
+    <a href="https://github.com/Rafaelhdsg/safecut" target="_blank" rel="noopener">GitHub</a>
     &nbsp;&middot;&nbsp;
     MIT License
   </p>

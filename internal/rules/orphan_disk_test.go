@@ -3,9 +3,9 @@ package rules
 import (
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/graph"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/graph"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 func TestOrphanDiskRule_Evaluate_unattached(t *testing.T) {

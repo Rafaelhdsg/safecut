@@ -4,10 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/graph"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pipeline"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/graph"
+	"github.com/Rafaelhdsg/safecut/internal/pipeline"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 )
 
 // Regression coverage for buildSafetyLine. The function is on a hot path

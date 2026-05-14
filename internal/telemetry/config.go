@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const configDir = "inframind"
+const configDir = "safecut"
 const configFile = "config.yaml"
 
 type Config struct {

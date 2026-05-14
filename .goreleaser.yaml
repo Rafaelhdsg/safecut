@@ -1,15 +1,15 @@
 version: 2
 
-project_name: inframind
+project_name: safecut
 
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - id: inframind
-    main: ./cmd/inframind
-    binary: inframind
+  - id: safecut
+    main: ./cmd/safecut
+    binary: safecut
     env:
       - CGO_ENABLED=0
     goos:
@@ -21,9 +21,9 @@ builds:
       - arm64
     ldflags:
       - -s -w
-      - -X github.com/Rafaelhdsg/inframind-cli/internal/version.Version={{.Version}}
-      - -X github.com/Rafaelhdsg/inframind-cli/internal/version.Commit={{.ShortCommit}}
-      - -X github.com/Rafaelhdsg/inframind-cli/internal/version.Date={{.Date}}
+      - -X github.com/Rafaelhdsg/safecut/internal/version.Version={{.Version}}
+      - -X github.com/Rafaelhdsg/safecut/internal/version.Commit={{.ShortCommit}}
+      - -X github.com/Rafaelhdsg/safecut/internal/version.Date={{.Date}}
 
 archives:
   - id: default
@@ -52,7 +52,7 @@ changelog:
 # NOTE: the `brews:` block requires two preconditions to succeed:
 #   1. The repository Rafaelhdsg/homebrew-tap must already exist and be
 #      public (Homebrew rejects private taps without extra setup).
-#   2. The secret HOMEBREW_TAP_TOKEN on Rafaelhdsg/inframind-cli must be
+#   2. The secret HOMEBREW_TAP_TOKEN on Rafaelhdsg/safecut must be
 #      a PAT (fine-grained or classic) with **Contents: read/write** on
 #      the tap repo. The default ${{ secrets.GITHUB_TOKEN }} cannot
 #      write to other repositories, so a dedicated PAT is required.
@@ -65,22 +65,22 @@ brews:
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
     directory: Formula
-    homepage: "https://github.com/Rafaelhdsg/inframind-cli"
-    description: "Decision engine for cloud infrastructure — analyze, simulate, and optimize costs"
+    homepage: "https://github.com/Rafaelhdsg/safecut"
+    description: "The cuts you'd defend at standup — find idle resources, simulate safely, and stop paying for what you don't use"
     license: "MIT"
     install: |
-      bin.install "inframind"
+      bin.install "safecut"
     test: |
       # Both forms must work: the explicit subcommand (stable API for
       # scripts/CI) and the cobra --version flag.
-      assert_match "inframind", shell_output("#{bin}/inframind version")
-      system "#{bin}/inframind", "--version"
-      system "#{bin}/inframind", "--help"
+      assert_match "safecut", shell_output("#{bin}/safecut version")
+      system "#{bin}/safecut", "--version"
+      system "#{bin}/safecut", "--help"
 
 release:
   github:
     owner: Rafaelhdsg
-    name: inframind-cli
+    name: safecut
   draft: false
   prerelease: auto
   # When a previous run half-succeeded (e.g. the tap step failed after
@@ -89,21 +89,21 @@ release:
   # detects the 422, deletes the stale asset, and retries the upload,
   # making re-runs of the same tag idempotent.
   replace_existing_artifacts: true
-  name_template: "InfraMind v{{ .Version }}"
+  name_template: "SafeCut v{{ .Version }}"
   header: |
     ## What's New
 
-    Run `inframind quick-scan` to see instant savings potential.
+    Run `safecut quick-scan` to see instant savings potential.
   footer: |
     ## Install
 
     ```bash
     # Homebrew
-    brew install Rafaelhdsg/tap/inframind
+    brew install Rafaelhdsg/tap/safecut
 
     # curl (Linux/macOS)
-    curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/inframind-cli/main/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/safecut/main/install.sh | bash
 
     # Go
-    go install github.com/Rafaelhdsg/inframind-cli/cmd/inframind@latest
+    go install github.com/Rafaelhdsg/safecut/cmd/safecut@latest
     ```

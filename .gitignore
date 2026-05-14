@@ -32,6 +32,8 @@ go.work.sum
 # .vscode/
 
 # Local build artefacts — release binaries come from GoReleaser, not the repo
+/safecut
+/safecut-*
 /inframind
 /inframind-*
 dist/

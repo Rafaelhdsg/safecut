@@ -1,6 +1,6 @@
-# InfraMind CLI
+# SafeCut CLI
 
-**Decision engine for cloud infrastructure — read-only, safe, explainable.**
+**The cuts you'd defend at standup — read-only, safe, explainable.**
 Find idle resources, simulate changes safely, and stop paying for what you're not using.
 
 > One command. Real savings. Nothing is modified. Ever. Runtime scales with subscription size (often under a minute; large tenants can take several minutes). Use `--resource-group` to scope one RG for faster runs.
@@ -11,25 +11,25 @@ Find idle resources, simulate changes safely, and stop paying for what you're no
 
 **Prerequisite:** an authenticated Azure session. Either run `az login`
 (simplest) or export `AZURE_SUBSCRIPTION_ID` (or `ARM_SUBSCRIPTION_ID`).
-Run `inframind doctor` first if unsure — it validates the credential
+Run `safecut doctor` first if unsure — it validates the credential
 chain and pricing cache before any scan.
 
 ```bash
-brew install Rafaelhdsg/tap/inframind
+brew install Rafaelhdsg/tap/safecut
 ```
 
 or
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/inframind-cli/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/safecut/main/install.sh | bash
 ```
 
 Then:
 
 ```bash
 az login                     # or: export AZURE_SUBSCRIPTION_ID=<id>
-inframind doctor             # optional: verify environment is ready
-inframind quick-scan
+safecut doctor             # optional: verify environment is ready
+safecut quick-scan
 ```
 
 That's it. No config files, no setup scripts, no flags. 100% read-only —
@@ -41,7 +41,7 @@ nothing is ever modified on your Azure subscription.
 
 The CLI is **free forever** for read-only scans, policy simulate, policy
 lint, history, and RI / rightsize suggestions — all shipping today.
-InfraMind Cloud (automation, scheduled scans, Slack alerts, white-label
+SafeCut Cloud (automation, scheduled scans, Slack alerts, white-label
 reports, SSO) ships with **v1.1**. Founding customers on the waitlist
 lock in today's price for the lifetime of their subscription.
 
@@ -53,14 +53,14 @@ lock in today's price for the lifetime of their subscription.
 | **Enterprise**  | from $799/mo **or 8% of verified savings**    | **v1.1 waitlist** | Mid-market / regulated — SAML (in design), audit |
 | **Partner/MSP** | 20% recurring revshare                        | **v1.1 waitlist** | MSPs / consultants managing 2+ clients           |
 
-Full pricing and FAQ: [pricing page](https://rafaelhdsg.github.io/inframind-cli/pricing.html)
-or run `inframind upgrade` for the in-terminal table.
+Full pricing and FAQ: [pricing page](https://safecut.dev/pricing.html)
+or run `safecut upgrade` for the in-terminal table.
 
 Optional:
 
 ```bash
-inframind quick-scan --resource-group <name>   # faster: one resource group only
-inframind quick-scan -o json --progress        # JSON on stdout; stage lines on stderr
+safecut quick-scan --resource-group <name>   # faster: one resource group only
+safecut quick-scan -o json --progress        # JSON on stdout; stage lines on stderr
 ```
 
 ### What you'll see
@@ -81,7 +81,7 @@ inframind quick-scan -o json --progress        # JSON on stdout; stage lines on 
   ─── DASHBOARD ──────────────────────────────────────────────
 
   +----------------------------------------------------------+
-  |  INFRAMIND  |  $4,212/yr waste across 3 RGs — 95% safe   |
+  |  SAFECUT  |  $4,212/yr waste across 3 RGs — 95% safe   |
   +----------------------------------------------------------+
   |  ANNUAL SAVINGS    $4,212 / yr                           |
   |  SAFETY SCORE      36/38 safe  [HIGH CONFIDENCE]         |
@@ -108,7 +108,7 @@ inframind quick-scan -o json --progress        # JSON on stdout; stage lines on 
      └─ SAVING:   $189.24/mo  ($6.31/day wasted)
 
   🔒  Full SIGNALS + BLAST analysis for 4 more targets (23 resources)
-     →  InfraMind Cloud  rafaelhdsg.github.io/inframind-cli
+     →  SafeCut Cloud  safecut.dev
 
   ─── INSIGHT ────────────────────────────────────────────────
 
@@ -117,18 +117,18 @@ inframind quick-scan -o json --progress        # JSON on stdout; stage lines on 
   'lab-testing'. Apply the 'development' policy template.
 
   ──────────────────────────────────────────────────────────────
-  NEXT  inframind policy simulate --resource-group <rg>  what-if analysis
+  NEXT  safecut policy simulate --resource-group <rg>  what-if analysis
 
   🔒 Full evidence report for all 96 resources, exportable
-  dashboards & Slack alerts → InfraMind Cloud  rafaelhdsg.github.io/inframind-cli
+  dashboards & Slack alerts → SafeCut Cloud  safecut.dev
 
   ROI SNAPSHOT
   ============
   → $351.00/mo identified in safe recommendations.
   • Pay Cloud $29/mo  →  $322.00 net savings/mo (11x ROI)
-  • Automate 23 recommendation(s) in one click  →  inframind upgrade --start-trial solo
-  • Managing 3 resource groups / clients?  →  inframind upgrade --partner
-  • Enterprise alternative: pay 8% of verified savings (greater applies).  inframind upgrade --book-demo
+  • Automate 23 recommendation(s) in one click  →  safecut upgrade --start-trial solo
+  • Managing 3 resource groups / clients?  →  safecut upgrade --partner
+  • Enterprise alternative: pay 8% of verified savings (greater applies).  safecut upgrade --book-demo
 ```
 
 </details>
@@ -142,113 +142,113 @@ quick-scan  →  policy simulate  →  apply [Cloud]
  (discover)      (what-if)          (automate)
 ```
 
-### `inframind quick-scan`
+### `safecut quick-scan`
 
 Zero-config instant scan. Scans 10 Azure resource types (canonical list: [`internal/defaults/defaults.go`](internal/defaults/defaults.go)) across your subscription.
 
 ```bash
-inframind quick-scan
-inframind quick-scan --subscription <ID>
-inframind quick-scan --resource-group <name>
-inframind quick-scan --export report.md
-inframind quick-scan -o json
-inframind quick-scan -o json --progress
+safecut quick-scan
+safecut quick-scan --subscription <ID>
+safecut quick-scan --resource-group <name>
+safecut quick-scan --export report.md
+safecut quick-scan -o json
+safecut quick-scan -o json --progress
 ```
 
-### `inframind policy simulate`
+### `safecut policy simulate`
 
 What-if analysis: see the blast radius of a policy change before applying it.
 
 ```bash
-inframind policy simulate --resource-group prod-sap --set criticality=high
-inframind policy simulate --resource-group prod-sap --set mode=protect --export report.html
+safecut policy simulate --resource-group prod-sap --set criticality=high
+safecut policy simulate --resource-group prod-sap --set mode=protect --export report.html
 ```
 
-### `inframind policy lint`
+### `safecut policy lint`
 
-Fast metadata-only validation of `inframind-*` governance tags. Runs
+Fast metadata-only validation of `safecut-*` governance tags. Runs
 discovery + policy resolution but skips metrics, rules, and simulation,
 so it's cheap enough to gate in CI. Flags unsupported tag values and
 drift between resource-level tags and their RG / subscription parent.
 
 ```bash
-inframind policy lint
-inframind policy lint --resource-group prod-sap
-inframind policy lint -o json
+safecut policy lint
+safecut policy lint --resource-group prod-sap
+safecut policy lint -o json
 ```
 
-### `inframind history`
+### `safecut history`
 
 Prints a compact table of local scan records for a subscription (7-day
 local window). Useful for smoke-testing that scans are persisting and
 spotting short-term trends without re-hitting Azure.
 
 ```bash
-inframind history
-inframind history --subscription <ID>
-inframind history -o json
+safecut history
+safecut history --subscription <ID>
+safecut history -o json
 ```
 
 > Long-window trends (30 / 60 / 90 days) and anomaly alerting ship with
-> InfraMind Cloud.
+> SafeCut Cloud.
 
-### `inframind apply` [Cloud]
+### `safecut apply` [Cloud]
 
 Runs the same full read-only scan as `quick-scan` and lists every
 recommendation that is safe to auto-execute. **In v1.0 the CLI does
 not mutate Azure** — actual execution, rollback windows, and audit
-trail ship with InfraMind Cloud (Solo tier and above). The CLI
+trail ship with SafeCut Cloud (Solo tier and above). The CLI
 output makes the split explicit so you never confuse "listed" with
 "applied".
 
 ```bash
-inframind apply
-inframind apply --subscription <ID>
-inframind apply --resource-group <name>
+safecut apply
+safecut apply --subscription <ID>
+safecut apply --resource-group <name>
 ```
 
-### `inframind config`
+### `safecut config`
 
 Manage CLI settings and telemetry preferences.
 
 ```bash
-inframind config --telemetry status
-inframind config --telemetry disable
+safecut config --telemetry status
+safecut config --telemetry disable
 ```
 
-### `inframind doctor`
+### `safecut doctor`
 
 Read-only environment check before a scan: runtime, subscription resolution,
 Azure credentials, pricing cache freshness, telemetry status.
 
 ```bash
-inframind doctor
-inframind doctor --subscription <ID>
+safecut doctor
+safecut doctor --subscription <ID>
 ```
 
-### `inframind upgrade`
+### `safecut upgrade`
 
-Compares InfraMind Cloud plans and jumps to the right conversion path.
+Compares SafeCut Cloud plans and jumps to the right conversion path.
 
 ```bash
-inframind upgrade                       # show the pricing table
-inframind upgrade --start-trial solo    # Solo $29/mo trial
-inframind upgrade --start-trial team    # Team $199/mo trial
-inframind upgrade --book-demo           # Enterprise (from $799/mo or 8% of savings)
-inframind upgrade --partner             # MSP / consultancy track (20% revshare)
-inframind upgrade --open                # open the relevant URL in your browser
+safecut upgrade                       # show the pricing table
+safecut upgrade --start-trial solo    # Solo $29/mo trial
+safecut upgrade --start-trial team    # Team $199/mo trial
+safecut upgrade --book-demo           # Enterprise (from $799/mo or 8% of savings)
+safecut upgrade --partner             # MSP / consultancy track (20% revshare)
+safecut upgrade --open                # open the relevant URL in your browser
 ```
 
-### `inframind partner`
+### `safecut partner`
 
 Previews the MSP / white-label track. Shows the partner pitch, lets you try a
 `--brand` / `--client` header, and jumps to the application form with
 `--apply`.
 
 ```bash
-inframind partner
-inframind partner --brand "Acme Consulting" --client "Contoso Ltd"
-inframind partner --apply
+safecut partner
+safecut partner --brand "Acme Consulting" --client "Contoso Ltd"
+safecut partner --apply
 ```
 
 ### Multi-cloud (coming soon)
@@ -259,9 +259,9 @@ or `--cloud gcp` prints the waitlist CTA — adapters land after v1.0.
 
 ---
 
-## What InfraMind does
+## What SafeCut does
 
-InfraMind correlates CPU, network, and disk signals using a weighted geometric mean to detect truly idle resources — not just "low CPU" false positives. It runs a 6-layer pipeline before recommending anything:
+SafeCut correlates CPU, network, and disk signals using a weighted geometric mean to detect truly idle resources — not just "low CPU" false positives. It runs a 6-layer pipeline before recommending anything:
 
 ```
 Discovery → Pricing → Dependency Graph → Decision Engine → Simulation → Forecast
@@ -286,9 +286,9 @@ VMs, Managed Disks, Public IPs, Network Interfaces, App Services, SQL Databases,
 
 ## Governance Tags
 
-InfraMind reads resource tags to understand business context. No agents, no sidecars — just tags.
+SafeCut reads resource tags to understand business context. No agents, no sidecars — just tags.
 
-### Mode (`inframind-mode`)
+### Mode (`safecut-mode`)
 
 | Value | Analyzed? | Recommendations? | Auto-Execute? |
 |-------|-----------|-------------------|---------------|
@@ -297,7 +297,7 @@ InfraMind reads resource tags to understand business context. No agents, no side
 | `protect` | Yes | Yes | **No** |
 | `ignore` | No | No | No |
 
-### Criticality (`inframind-criticality`)
+### Criticality (`safecut-criticality`)
 
 | Value | Thresholds | Risk | Auto-Execute? |
 |-------|-----------|------|---------------|
@@ -305,11 +305,11 @@ InfraMind reads resource tags to understand business context. No agents, no side
 | `medium` | Standard | No change | Allowed |
 | `low` | 2x aggressive | No change | Allowed |
 
-### External Dependencies (`inframind-external`)
+### External Dependencies (`safecut-external`)
 
 Flag resources with dependencies outside the cloud graph (VPN, ExpressRoute, on-prem). Confidence is halved, risk increases, auto-execution blocked. If a policy simulation touches external resources, impact auto-escalates to **CRITICAL**.
 
-### Templates (`inframind-template`)
+### Templates (`safecut-template`)
 
 Apply presets at scale:
 
@@ -321,7 +321,7 @@ Apply presets at scale:
 | `legacy` | protect | high | true |
 
 ```bash
-az tag update --resource-id <RG_ID> --operation merge --tags inframind-template=production
+az tag update --resource-id <RG_ID> --operation merge --tags safecut-template=production
 ```
 
 ### Policy Inheritance
@@ -332,21 +332,21 @@ Policies resolve by walking the cloud hierarchy:
 Resource → Resource Group → Subscription → Default
 ```
 
-Each field resolves independently (first-match wins). Use `inframind-policy=override` to block inheritance on a specific resource.
+Each field resolves independently (first-match wins). Use `safecut-policy=override` to block inheritance on a specific resource.
 
 ---
 
 ## Architecture
 
 ```
-inframind-cli/
+safecut/
 ├── cmd/
-│   ├── inframind/main.go           # Entry point
+│   ├── safecut/main.go           # Entry point
 │   ├── root.go                     # Cobra root + global flags
-│   ├── quick_scan.go               # inframind quick-scan
-│   ├── apply.go                    # inframind apply [Cloud]
-│   ├── policy.go                   # inframind policy simulate
-│   └── config.go                   # inframind config
+│   ├── quick_scan.go               # safecut quick-scan
+│   ├── apply.go                    # safecut apply [Cloud]
+│   ├── policy.go                   # safecut policy simulate
+│   └── config.go                   # safecut config
 ├── internal/
 │   ├── discovery/                  # Resource & metrics collection
 │   ├── engine/                     # Analyzer, decision, policy, safe-lock
@@ -368,18 +368,18 @@ inframind-cli/
 
 ```bash
 # Homebrew
-brew install Rafaelhdsg/tap/inframind
+brew install Rafaelhdsg/tap/safecut
 
 # curl
-curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/inframind-cli/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/safecut/main/install.sh | bash
 
 # Go
-go install github.com/Rafaelhdsg/inframind-cli/cmd/inframind@latest
+go install github.com/Rafaelhdsg/safecut/cmd/safecut@latest
 
 # Build from source
-git clone https://github.com/Rafaelhdsg/inframind-cli.git
-cd inframind-cli
-go build -o inframind ./cmd/inframind
+git clone https://github.com/Rafaelhdsg/safecut.git
+cd safecut
+go build -o safecut ./cmd/safecut
 ```
 
 ## Development

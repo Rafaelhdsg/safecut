@@ -3,7 +3,7 @@ package rules
 import (
 	"fmt"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
 )
 
 // OrphanIPRule detects public IP addresses that are not associated to any resource.

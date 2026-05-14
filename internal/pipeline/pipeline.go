@@ -6,14 +6,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/discovery"
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/forecast"
-	"github.com/Rafaelhdsg/inframind-cli/internal/graph"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
-	"github.com/Rafaelhdsg/inframind-cli/internal/rules"
-	"github.com/Rafaelhdsg/inframind-cli/internal/simulation"
+	"github.com/Rafaelhdsg/safecut/internal/discovery"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/forecast"
+	"github.com/Rafaelhdsg/safecut/internal/graph"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/rules"
+	"github.com/Rafaelhdsg/safecut/internal/simulation"
 )
 
 // Output is the final result produced by running the full pipeline.
@@ -45,7 +45,7 @@ type Output struct {
 // ProgressFunc mirrors discovery.ProgressFunc to avoid circular imports.
 type ProgressFunc func(stage, detail string, current, total int)
 
-// Pipeline orchestrates InfraMind's layers:
+// Pipeline orchestrates SafeCut's layers:
 // Discovery -> Policy Resolution (with inheritance) -> Partition -> Graph -> Analysis -> Decision -> Simulation -> Forecast.
 type Pipeline struct {
 	provider   providers.Provider
@@ -220,7 +220,7 @@ type LintResult struct {
 }
 
 // InvalidTag captures a resource-level tag whose value does not match the
-// accepted vocabulary for the canonical inframind-* keys.
+// accepted vocabulary for the canonical safecut-* keys.
 type InvalidTag struct {
 	ResourceID string
 	Key        string
@@ -260,7 +260,7 @@ func (p *Pipeline) Lint(ctx context.Context, resourceTypes []string) (*LintResul
 	}, nil
 }
 
-// detectInvalidTags flags resources whose inframind-* tags carry values
+// detectInvalidTags flags resources whose safecut-* tags carry values
 // the PolicyResolver does not understand.
 func detectInvalidTags(resources []providers.Resource) []InvalidTag {
 	validModes := map[string]bool{
@@ -276,22 +276,22 @@ func detectInvalidTags(resources []providers.Resource) []InvalidTag {
 			lk := strings.ToLower(strings.TrimSpace(k))
 			lv := strings.ToLower(strings.TrimSpace(v))
 			switch lk {
-			case "inframind-mode", "inframind:mode":
+			case "safecut-mode", "safecut:mode":
 				if !validModes[lv] {
 					out = append(out, InvalidTag{ResourceID: r.ID, Key: k, Value: v,
 						Reason: "mode must be one of: default, protect, observe, ignore"})
 				}
-			case "inframind-criticality", "inframind:criticality":
+			case "safecut-criticality", "safecut:criticality":
 				if !validCrit[lv] {
 					out = append(out, InvalidTag{ResourceID: r.ID, Key: k, Value: v,
 						Reason: "criticality must be one of: low, medium, high, critical"})
 				}
-			case "inframind-template", "inframind:template":
+			case "safecut-template", "safecut:template":
 				if _, ok := builtins[lv]; !ok && lv != "" {
 					out = append(out, InvalidTag{ResourceID: r.ID, Key: k, Value: v,
 						Reason: "unknown template (builtin: production, staging, development, legacy)"})
 				}
-			case "inframind-external", "inframind:external":
+			case "safecut-external", "safecut:external":
 				if lv != "true" && lv != "false" && lv != "yes" && lv != "no" && lv != "" {
 					out = append(out, InvalidTag{ResourceID: r.ID, Key: k, Value: v,
 						Reason: "external must be true or false"})

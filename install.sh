@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
-# InfraMind CLI installer.
+# SafeCut CLI installer.
 #
 # Downloads the latest (or pinned) GoReleaser archive from GitHub, verifies
-# the checksum, and installs the `inframind` binary to $INSTALL_DIR.
+# the checksum, and installs the `safecut` binary to $INSTALL_DIR.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/inframind-cli/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/safecut/main/install.sh | bash
 #
 # Environment variables:
 #   INSTALL_DIR     install prefix (default: /usr/local/bin)
-#   INFRAMIND_VERSION   pin a specific version (default: latest release)
-#   INFRAMIND_SKIP_VERIFY  set to 1 to skip checksum verification (not recommended)
+#   SAFECUT_VERSION   pin a specific version (default: latest release)
+#   SAFECUT_SKIP_VERIFY  set to 1 to skip checksum verification (not recommended)
 set -euo pipefail
 
-REPO="Rafaelhdsg/inframind-cli"
-BINARY="inframind"
+REPO="Rafaelhdsg/safecut"
+BINARY="safecut"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
-PIN_VERSION="${INFRAMIND_VERSION:-}"
-SKIP_VERIFY="${INFRAMIND_SKIP_VERIFY:-0}"
+PIN_VERSION="${SAFECUT_VERSION:-}"
+SKIP_VERIFY="${SAFECUT_SKIP_VERIFY:-0}"
 
 # TMP_DIR must be declared at the top-level so the EXIT trap (registered
 # after mktemp) can reference it without tripping `set -u`. Bash traps
@@ -69,7 +69,7 @@ verify_checksum() {
   local tmp archive version os arch
   tmp="$1"; archive="$2"; version="$3"; os="$4"; arch="$5"
   if [[ "$SKIP_VERIFY" == "1" ]]; then
-    log "WARNING: checksum verification skipped via INFRAMIND_SKIP_VERIFY=1"
+    log "WARNING: checksum verification skipped via SAFECUT_SKIP_VERIFY=1"
     return 0
   fi
   require_cmd sha256sum
@@ -96,7 +96,7 @@ main() {
 
   log "Detected platform: ${os}/${arch}"
   version=$(resolve_version)
-  log "Installing InfraMind v${version}…"
+  log "Installing SafeCut v${version}…"
 
   url="https://github.com/${REPO}/releases/download/v${version}/${BINARY}_${version}_${os}_${arch}.tar.gz"
   TMP_DIR=$(mktemp -d)
@@ -121,7 +121,7 @@ main() {
   fi
 
   log ""
-  log "✓ Installed InfraMind v${version} to ${INSTALL_DIR}/${BINARY}"
+  log "✓ Installed SafeCut v${version} to ${INSTALL_DIR}/${BINARY}"
   if command -v "${BINARY}" >/dev/null 2>&1; then
     "${BINARY}" version 2>/dev/null | sed 's/^/    /' || true
   else

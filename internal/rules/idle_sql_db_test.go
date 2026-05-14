@@ -3,8 +3,8 @@ package rules
 import (
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 func TestIdleSQLDatabaseRule_pausedPaidTier_flagged(t *testing.T) {

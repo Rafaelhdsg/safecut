@@ -8,7 +8,7 @@ Run this before pushing a version tag (`v*`) so GitHub Actions can run [`.github
 2. `go mod verify`
 3. `go vet ./...`
 4. `go test ./... -count=1`
-5. `go build -o inframind ./cmd/inframind`
+5. `go build -o safecut ./cmd/safecut`
 
 Optional: `go test -race ./...` on packages you care about.
 
@@ -21,24 +21,24 @@ Optional: `go test -race ./...` on packages you care about.
 
 Requires `az login` or equivalent and a **non-production** subscription or resource group.
 
-1. Build or `go run ./cmd/inframind`.
-2. Run `inframind doctor` first — confirms auth chain, pricing cache, subscription resolution.
-3. Optionally set `INFRAMIND_E2E=1` and run [`scripts/smoke.sh`](../scripts/smoke.sh) with `INFRAE2E_RG` pointing at a small RG.
+1. Build or `go run ./cmd/safecut`.
+2. Run `safecut doctor` first — confirms auth chain, pricing cache, subscription resolution.
+3. Optionally set `SAFECUT_E2E=1` and run [`scripts/smoke.sh`](../scripts/smoke.sh) with `INFRAE2E_RG` pointing at a small RG.
 
 Commands to spot-check:
 
-- `inframind doctor`
-- `inframind policy lint --resource-group <sandbox-rg>`
-- `inframind quick-scan --resource-group <sandbox-rg>` (verify ROI SNAPSHOT block renders with real savings)
-- `inframind quick-scan --cloud aws` (verify friendly stub)
-- `inframind policy simulate --resource-group <sandbox-rg> --set criticality=high`
-- `inframind apply --resource-group <sandbox-rg>` (read-only scan path only)
-- `inframind upgrade` (tier table)
-- `inframind upgrade --start-trial solo` (verify correct checkout URL)
-- `inframind upgrade --book-demo`
-- `inframind upgrade --partner`
-- `inframind partner --brand "Acme" --client "Contoso"` (header preview)
-- `inframind partner --apply`
+- `safecut doctor`
+- `safecut policy lint --resource-group <sandbox-rg>`
+- `safecut quick-scan --resource-group <sandbox-rg>` (verify ROI SNAPSHOT block renders with real savings)
+- `safecut quick-scan --cloud aws` (verify friendly stub)
+- `safecut policy simulate --resource-group <sandbox-rg> --set criticality=high`
+- `safecut apply --resource-group <sandbox-rg>` (read-only scan path only)
+- `safecut upgrade` (tier table)
+- `safecut upgrade --start-trial solo` (verify correct checkout URL)
+- `safecut upgrade --book-demo`
+- `safecut upgrade --partner`
+- `safecut partner --brand "Acme" --client "Contoso"` (header preview)
+- `safecut partner --apply`
 
 ## Conversion gate (new)
 
@@ -52,7 +52,7 @@ real and observable, not just printed text:
       Typeform submission).
 - [ ] `cta_shown` and `cta_clicked` events are visible in PostHog for
       `quick_scan_roi`, `upgrade_cmd`, and `partner_cmd` contexts with
-      `INFRAMIND_POSTHOG_KEY` set locally during the smoke test.
+      `SAFECUT_POSTHOG_KEY` set locally during the smoke test.
 - [ ] `docs/pricing.html` FAQ and CTAs render without layout breakage on
       a 360px-wide viewport.
 - [ ] Hero comparison table in `docs/index.html` is up to date (Azure
@@ -73,7 +73,7 @@ real and observable, not just printed text:
 ## GitHub secrets
 
 - **`GITHUB_TOKEN`** — provided by Actions for the release job. Can
-  write to `Rafaelhdsg/inframind-cli` only.
+  write to `Rafaelhdsg/safecut` only.
 - **`HOMEBREW_TAP_TOKEN`** — **required** for the Homebrew tap push.
   - Must be a dedicated PAT (fine-grained or classic), NOT the default
     `GITHUB_TOKEN` (which has no access to other repositories).
@@ -96,9 +96,9 @@ Before the first release, create `Rafaelhdsg/homebrew-tap`:
 - Must be **public** (private taps require extra `brew tap` flags).
 - Name must be exactly `homebrew-<something>` (Homebrew convention).
 - Seed it with a README so the default branch exists; GoReleaser writes
-  `Formula/inframind.rb` automatically on each release.
+  `Formula/safecut.rb` automatically on each release.
 
 ## After the tag
 
 - Verify release assets and checksums on GitHub.
-- Smoke-install: Homebrew formula test runs `inframind --help`; optionally run a quick-scan from a test machine.
+- Smoke-install: Homebrew formula test runs `safecut --help`; optionally run a quick-scan from a test machine.

@@ -7,19 +7,19 @@ import (
 	"sort"
 	"time"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/history"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/internal/history"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 	"github.com/spf13/cobra"
 )
 
 var historyCmd = &cobra.Command{
 	Use:   "history",
 	Short: "Show the last scans for a subscription (local, 7-day window)",
-	Long: `Prints a compact table of local scan records. Useful to confirm InfraMind
+	Long: `Prints a compact table of local scan records. Useful to confirm SafeCut
 persisted the last scan and to see trends without re-hitting Azure.
 
-InfraMind keeps 7 days of local history. Longer windows and anomaly
-detection ship with InfraMind Cloud.`,
+SafeCut keeps 7 days of local history. Longer windows and anomaly
+detection ship with SafeCut Cloud.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		flagSub, _ := cmd.Flags().GetString("subscription")
 		sub, err := resolveSubscriptionID(flagSub)
@@ -57,10 +57,10 @@ func renderHistoryTable(sub string, records []history.ScanRecord) {
 	if len(records) == 0 {
 		fmt.Printf("  %s No local history yet. Run %s first.\n\n",
 			report.Dim("·"),
-			report.Cyan("inframind quick-scan"))
+			report.Cyan("safecut quick-scan"))
 		fmt.Printf("  %s  %s\n\n",
 			report.Dim("30/60/90-day trends & anomaly alerts →"),
-			report.Bold("InfraMind Cloud")+" "+report.Dim(report.WaitlistURL))
+			report.Bold("SafeCut Cloud")+" "+report.Dim(report.WaitlistURL))
 		return
 	}
 	for _, r := range records {
@@ -73,7 +73,7 @@ func renderHistoryTable(sub string, records []history.ScanRecord) {
 	fmt.Println()
 	fmt.Printf("  %s  %s\n\n",
 		report.Dim("30/60/90-day trends & anomaly alerts →"),
-		report.Bold("InfraMind Cloud")+" "+report.Dim(report.WaitlistURL))
+		report.Bold("SafeCut Cloud")+" "+report.Dim(report.WaitlistURL))
 }
 
 func init() {

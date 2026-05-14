@@ -3,8 +3,8 @@ package simulation
 import (
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/graph"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/graph"
 )
 
 func TestEngine_Run_applyRecommendation(t *testing.T) {

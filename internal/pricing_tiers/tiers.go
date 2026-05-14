@@ -1,4 +1,4 @@
-// Package pricing_tiers is the single source of truth for InfraMind commercial
+// Package pricing_tiers is the single source of truth for SafeCut commercial
 // tiers, prices, and conversion URLs. All CTAs (CLI, docs, README) must
 // re-import from here so the product presents one consistent story.
 package pricing_tiers
@@ -16,7 +16,7 @@ type Tier struct {
 }
 
 // Solo is the self-serve plan for individual operators (freelancers, single-sub CTOs).
-// The feature list reflects what ships with InfraMind Cloud v1.1 — the CLI
+// The feature list reflects what ships with SafeCut Cloud v1.1 — the CLI
 // Free tier already covers discovery, simulation, and history.
 var Solo = Tier{
 	ID:     "solo",
@@ -98,28 +98,28 @@ func All() []Tier {
 // maintainers don't have to re-derive the routing.
 // Note: while we stabilise on a final brand domain, all CTAs route to
 // the GitHub Pages mirror of the landing page (rafaelhdsg.github.io/
-// inframind-cli). When the production domain is live, do a single
+// safecut). When the production domain is live, do a single
 // global replace of this base URL — every other usage in the repo
 // derives from these constants.
 const (
 	// CheckoutSoloURL routes to the waitlist anchor while billing is
 	// gated. Final destination will be /checkout/solo on the prod domain.
-	CheckoutSoloURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	CheckoutSoloURL = "https://safecut.dev/#waitlist"
 	// CheckoutTeamURL routes to the waitlist anchor while billing is
 	// gated. Final destination will be /checkout/team.
-	CheckoutTeamURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	CheckoutTeamURL = "https://safecut.dev/#waitlist"
 	// EnterpriseURL routes to the waitlist while the Calendly /
 	// enterprise gate is being set up.
-	EnterpriseURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	EnterpriseURL = "https://safecut.dev/#waitlist"
 	// PartnerURL routes to the waitlist until the partner application
 	// form is built.
-	PartnerURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	PartnerURL = "https://safecut.dev/#waitlist"
 	// PricingURL is the public pricing page — stable across versions.
-	PricingURL = "https://rafaelhdsg.github.io/inframind-cli/pricing.html"
+	PricingURL = "https://safecut.dev/pricing.html"
 	// WaitlistURL is the canonical fallback CTA while Cloud is in
 	// early access. Do not remove — doubles as the friendly stub for
 	// unsupported `--cloud aws|gcp` flags.
-	WaitlistURL = "https://rafaelhdsg.github.io/inframind-cli/#waitlist"
+	WaitlistURL = "https://safecut.dev/#waitlist"
 )
 
 // SoloMonthlyUSD is the numeric Solo price used for payback math in CTAs.

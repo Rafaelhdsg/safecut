@@ -42,13 +42,13 @@ func historyDir() string {
 	}
 	switch runtime.GOOS {
 	case "darwin":
-		return filepath.Join(home, "Library", "Application Support", "inframind", "history")
+		return filepath.Join(home, "Library", "Application Support", "safecut", "history")
 	default:
 		cfg := os.Getenv("XDG_CONFIG_HOME")
 		if cfg == "" {
 			cfg = filepath.Join(home, ".config")
 		}
-		return filepath.Join(cfg, "inframind", "history")
+		return filepath.Join(cfg, "safecut", "history")
 	}
 }
 

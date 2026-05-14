@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +24,7 @@ func runCloudStub(cmd *cobra.Command, cloud string) error {
 
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, "  %s %s\n", report.BoldCyan("⚡"), report.Bold(label+" support — coming soon"))
-	fmt.Fprintln(w, "  "+report.Dim("InfraMind v1.0 ships Azure-first. The engine, rules, and"))
+	fmt.Fprintln(w, "  "+report.Dim("SafeCut v1.0 ships Azure-first. The engine, rules, and"))
 	fmt.Fprintln(w, "  "+report.Dim("policy model are cloud-agnostic — "+c+" adapters arrive next."))
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, "  %s  %s\n",

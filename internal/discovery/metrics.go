@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 // MetricsStatus tracks whether we actually trust the metrics we collected

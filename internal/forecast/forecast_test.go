@@ -3,8 +3,8 @@ package forecast
 import (
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/simulation"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/simulation"
 )
 
 // TestCalculate_TotalProjectedSavings locks the v1.0 rename of the

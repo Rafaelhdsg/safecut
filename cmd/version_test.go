@@ -19,7 +19,7 @@ func executeRoot(t *testing.T, args ...string) string {
 	rootCmd.SetOut(buf)
 	rootCmd.SetErr(buf)
 	rootCmd.SetArgs(args)
-	t.Setenv("INFRAMIND_NO_TELEMETRY", "1")
+	t.Setenv("SAFECUT_NO_TELEMETRY", "1")
 	t.Cleanup(resetAllFlags)
 	if err := rootCmd.Execute(); err != nil {
 		t.Fatalf("executeRoot %v: %v\noutput: %s", args, err, buf.String())
@@ -45,7 +45,7 @@ func resetAllFlags() {
 
 func TestVersionCommand_humanReadable(t *testing.T) {
 	out := executeRoot(t, "version")
-	for _, want := range []string{"inframind", "commit:", "build date:", "go:"} {
+	for _, want := range []string{"safecut", "commit:", "build date:", "go:"} {
 		if !strings.Contains(out, want) {
 			t.Fatalf("version output missing %q\nfull output: %s", want, out)
 		}

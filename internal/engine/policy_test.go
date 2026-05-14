@@ -5,7 +5,7 @@ import "testing"
 func TestPolicyResolver_inheritsFromRG(t *testing.T) {
 	r := NewPolicyResolver()
 	h := TagHierarchy{
-		ResourceGroupTags: map[string]string{"inframind-mode": "protect"},
+		ResourceGroupTags: map[string]string{"safecut-mode": "protect"},
 		ResourceGroupName: "rg-prod",
 	}
 	rp := r.Resolve(h)
@@ -20,8 +20,8 @@ func TestPolicyResolver_inheritsFromRG(t *testing.T) {
 func TestPolicyResolver_resourceOverridesRG(t *testing.T) {
 	r := NewPolicyResolver()
 	h := TagHierarchy{
-		ResourceTags:      map[string]string{"inframind-mode": "ignore"},
-		ResourceGroupTags: map[string]string{"inframind-mode": "protect"},
+		ResourceTags:      map[string]string{"safecut-mode": "ignore"},
+		ResourceGroupTags: map[string]string{"safecut-mode": "protect"},
 	}
 	rp := r.Resolve(h)
 	if rp.Mode != ModeIgnore {
@@ -35,7 +35,7 @@ func TestPolicyResolver_resourceOverridesRG(t *testing.T) {
 func TestPolicyResolver_templateProduction(t *testing.T) {
 	r := NewPolicyResolver()
 	h := TagHierarchy{
-		ResourceTags: map[string]string{"inframind-template": "production"},
+		ResourceTags: map[string]string{"safecut-template": "production"},
 	}
 	rp := r.Resolve(h)
 	if rp.Mode != ModeProtect || rp.Criticality != CriticalityHigh {
@@ -46,8 +46,8 @@ func TestPolicyResolver_templateProduction(t *testing.T) {
 func TestPolicyResolver_detectsDrift(t *testing.T) {
 	r := NewPolicyResolver()
 	h := TagHierarchy{
-		ResourceTags:      map[string]string{"inframind-mode": "ignore"},
-		ResourceGroupTags: map[string]string{"inframind-mode": "protect"},
+		ResourceTags:      map[string]string{"safecut-mode": "ignore"},
+		ResourceGroupTags: map[string]string{"safecut-mode": "protect"},
 		ResourceGroupName: "rg-prod",
 	}
 	rp := r.Resolve(h)
@@ -69,10 +69,10 @@ func TestPolicyResolver_overrideDisablesInheritance(t *testing.T) {
 	r := NewPolicyResolver()
 	h := TagHierarchy{
 		ResourceTags: map[string]string{
-			"inframind-policy": "override",
-			"inframind-mode":   "ignore",
+			"safecut-policy": "override",
+			"safecut-mode":   "ignore",
 		},
-		ResourceGroupTags: map[string]string{"inframind-mode": "protect"},
+		ResourceGroupTags: map[string]string{"safecut-mode": "protect"},
 	}
 	rp := r.Resolve(h)
 	if rp.Mode != ModeIgnore {

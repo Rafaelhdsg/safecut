@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/Rafaelhdsg/inframind-cli/cmd"
+	"github.com/Rafaelhdsg/safecut/cmd"
 )
 
 func main() {

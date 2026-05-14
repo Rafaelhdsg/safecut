@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pipeline"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/pipeline"
 )
 
 func TestRenderPolicySim_JSON_roundtrip(t *testing.T) {
@@ -66,7 +66,7 @@ func TestExportPolicySim_markdownSections(t *testing.T) {
 		PolicySimOutput: &engine.PolicySimOutput{
 			Scope:          engine.ScopeSubscription,
 			ScopeName:      "sub-xyz",
-			SetTags:        map[string]string{"inframind-mode": "protect"},
+			SetTags:        map[string]string{"safecut-mode": "protect"},
 			TotalResources: 5,
 			AffectedCount:  2,
 		},

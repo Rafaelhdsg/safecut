@@ -17,19 +17,19 @@ type PolicySimInput struct {
 	SetTags   map[string]string // shorthand keys: "criticality", "mode", "external", "template"
 }
 
-// ExpandTags converts shorthand --set keys into full InfraMind tag names.
+// ExpandTags converts shorthand --set keys into full SafeCut tag names.
 func (i PolicySimInput) ExpandTags() map[string]string {
 	expanded := make(map[string]string, len(i.SetTags))
 	for k, v := range i.SetTags {
 		switch k {
 		case "criticality":
-			expanded["inframind-criticality"] = v
+			expanded["safecut-criticality"] = v
 		case "mode":
-			expanded["inframind-mode"] = v
+			expanded["safecut-mode"] = v
 		case "external":
-			expanded["inframind-external"] = v
+			expanded["safecut-external"] = v
 		case "template":
-			expanded["inframind-template"] = v
+			expanded["safecut-template"] = v
 		default:
 			expanded[k] = v
 		}

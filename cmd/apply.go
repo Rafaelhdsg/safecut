@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/pipeline"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers/azure"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/progress"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/internal/pipeline"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/providers/azure"
+	"github.com/Rafaelhdsg/safecut/pkg/progress"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 	"github.com/spf13/cobra"
 )
 
@@ -18,11 +18,11 @@ var applyCmd = &cobra.Command{
 	Use:   "apply",
 	Short: "Apply optimizations [Cloud]",
 	Long: `Runs the same full read-only scan as quick-scan, then lists actions
-that are safe to automate. Actual execution requires InfraMind Cloud.
+that are safe to automate. Actual execution requires SafeCut Cloud.
 
 Use --resource-group to scope to one RG for a faster run.
 
-Join the waitlist at https://rafaelhdsg.github.io/inframind-cli/#waitlist`,
+Join the waitlist at https://safecut.dev/#waitlist`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cloud, _ := cmd.Flags().GetString("cloud")
 		if cloud != "" && cloud != "azure" {
@@ -92,7 +92,7 @@ Join the waitlist at https://rafaelhdsg.github.io/inframind-cli/#waitlist`,
 		fmt.Println()
 		if len(autoActions) == 0 {
 			fmt.Printf("  %s  No actions safe to auto-execute found.\n", report.Green("✓"))
-			fmt.Printf("  Run %s for detailed analysis.\n\n", report.Cyan("inframind quick-scan"))
+			fmt.Printf("  Run %s for detailed analysis.\n\n", report.Cyan("safecut quick-scan"))
 			return nil
 		}
 
@@ -118,7 +118,7 @@ Join the waitlist at https://rafaelhdsg.github.io/inframind-cli/#waitlist`,
 		fmt.Println()
 		fmt.Printf("  %s  %s\n",
 			report.BoldCyan("⚡"),
-			report.Bold("Auto-execution requires InfraMind Cloud"))
+			report.Bold("Auto-execution requires SafeCut Cloud"))
 		fmt.Printf("     Automate all %d actions with one click, rollback protection included.\n", len(autoActions))
 		fmt.Printf("     %s  %s\n\n",
 			report.Dim("→"),

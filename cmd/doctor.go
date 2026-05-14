@@ -12,10 +12,10 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing"
-	"github.com/Rafaelhdsg/inframind-cli/internal/telemetry"
-	"github.com/Rafaelhdsg/inframind-cli/internal/version"
-	"github.com/Rafaelhdsg/inframind-cli/pkg/report"
+	"github.com/Rafaelhdsg/safecut/internal/pricing"
+	"github.com/Rafaelhdsg/safecut/internal/telemetry"
+	"github.com/Rafaelhdsg/safecut/internal/version"
+	"github.com/Rafaelhdsg/safecut/pkg/report"
 	"github.com/spf13/cobra"
 )
 
@@ -52,7 +52,7 @@ type checkResult struct {
 func runDoctor(cmd *cobra.Command) error {
 	w := cmd.OutOrStdout()
 	fmt.Fprintln(w)
-	fmt.Fprintf(w, "  %s\n", report.Header("InfraMind Doctor"))
+	fmt.Fprintf(w, "  %s\n", report.Header("SafeCut Doctor"))
 	fmt.Fprintf(w, "  %s\n", report.Dim("================"))
 	fmt.Fprintln(w)
 
@@ -115,7 +115,7 @@ func checkRuntime() checkResult {
 	return checkResult{
 		Name:   "Runtime",
 		OK:     true,
-		Detail: fmt.Sprintf("inframind %s (%s/%s, go %s)", version.Full(), runtime.GOOS, runtime.GOARCH, runtime.Version()),
+		Detail: fmt.Sprintf("safecut %s (%s/%s, go %s)", version.Full(), runtime.GOOS, runtime.GOARCH, runtime.Version()),
 	}
 }
 

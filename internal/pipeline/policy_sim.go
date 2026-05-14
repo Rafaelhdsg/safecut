@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/discovery"
-	"github.com/Rafaelhdsg/inframind-cli/internal/engine"
-	"github.com/Rafaelhdsg/inframind-cli/internal/forecast"
-	"github.com/Rafaelhdsg/inframind-cli/internal/graph"
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
-	"github.com/Rafaelhdsg/inframind-cli/internal/rules"
-	"github.com/Rafaelhdsg/inframind-cli/internal/simulation"
+	"github.com/Rafaelhdsg/safecut/internal/discovery"
+	"github.com/Rafaelhdsg/safecut/internal/engine"
+	"github.com/Rafaelhdsg/safecut/internal/forecast"
+	"github.com/Rafaelhdsg/safecut/internal/graph"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/rules"
+	"github.com/Rafaelhdsg/safecut/internal/simulation"
 )
 
 // PolicySimResult is the full what-if output: policy diff, decision diff,

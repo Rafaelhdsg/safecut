@@ -1,6 +1,6 @@
 # Landing Page — Deploy Guide
 
-This folder contains the InfraMind landing page, served via GitHub Pages.
+This folder contains the SafeCut landing page, served via GitHub Pages.
 
 ## Deploy to GitHub Pages
 
@@ -9,12 +9,12 @@ This folder contains the InfraMind landing page, served via GitHub Pages.
 3. Choose branch `main`, folder `/docs`
 4. Click **Save**
 
-The page will be live at `https://rafaelhdsg.github.io/inframind-cli/` within a few minutes.
+The page will be live at `https://safecut.dev/` within a few minutes.
 
 ## Custom domain
 
 The site is currently served from the default GitHub Pages URL
-(`rafaelhdsg.github.io/inframind-cli`). When a final brand domain is
+(`safecut.dev`). When a final brand domain is
 ready, the steps to wire it up are:
 
 1. Register the domain at any registrar (Cloudflare Registrar, Porkbun

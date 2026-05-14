@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/pricing_tiers"
+	"github.com/Rafaelhdsg/safecut/internal/pricing_tiers"
 )
 
 func TestResolveUpgradeAction_precedence(t *testing.T) {

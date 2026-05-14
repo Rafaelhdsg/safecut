@@ -5,21 +5,21 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/version"
+	"github.com/Rafaelhdsg/safecut/internal/version"
 	"github.com/spf13/cobra"
 )
 
-// versionCmd prints the InfraMind CLI version and build metadata.
+// versionCmd prints the SafeCut CLI version and build metadata.
 // It is intentionally explicit (and independent from cobra's --version
 // flag) so release scripts, docker images and support playbooks have
-// a stable `inframind version` to call without parsing a flag banner.
+// a stable `safecut version` to call without parsing a flag banner.
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print InfraMind CLI version, commit, and build date",
+	Short: "Print SafeCut CLI version, commit, and build date",
 	Long: `Print the compiled-in version, commit short hash, build date and runtime.
 
 These values are injected at build time via -ldflags by GoReleaser. When
-InfraMind is built locally (e.g. ` + "`go build ./cmd/inframind`" + `)
+SafeCut is built locally (e.g. ` + "`go build ./cmd/safecut`" + `)
 they fall back to "dev" / "none" / "unknown".
 
 Flags:
@@ -57,7 +57,7 @@ func runVersion(cmd *cobra.Command, _ []string) error {
 		return enc.Encode(payload)
 	}
 
-	fmt.Fprintf(w, "inframind %s\n", version.Version)
+	fmt.Fprintf(w, "safecut %s\n", version.Version)
 	fmt.Fprintf(w, "  commit:     %s\n", version.Commit)
 	fmt.Fprintf(w, "  build date: %s\n", version.Date)
 	fmt.Fprintf(w, "  go:         %s (%s/%s)\n", runtime.Version(), runtime.GOOS, runtime.GOARCH)

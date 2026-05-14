@@ -3,7 +3,7 @@ package graph
 import (
 	"strings"
 
-	"github.com/Rafaelhdsg/inframind-cli/internal/providers"
+	"github.com/Rafaelhdsg/safecut/internal/providers"
 )
 
 // LinkAzureResources inspects Azure resource properties and establishes

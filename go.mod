@@ -1,4 +1,4 @@
-module github.com/Rafaelhdsg/inframind-cli
+module github.com/Rafaelhdsg/safecut
 
 go 1.24.0
 

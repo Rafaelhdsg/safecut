@@ -150,6 +150,26 @@
     text-align: center; padding: 3rem 2rem; color: var(--text-dim);
     font-size: 0.85rem; border-top: 1px solid var(--border);
   }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    nav { padding: 0.75rem 1rem; }
+    .nav-links { gap: 0.75rem; }
+    .nav-links a:not(.btn-nav) { font-size: 0.85rem; }
+    .hero { padding: 6.5rem 1.25rem 3rem; }
+    .hero h1 { font-size: 1.85rem; }
+    .hero p.sub { font-size: 1rem; }
+    section { padding: 3rem 1.25rem; }
+    section h2 { font-size: 1.4rem; }
+    .tier { padding: 1.5rem 1.25rem; }
+    .tier .price { font-size: 1.5rem; }
+  }
+  @media (max-width: 380px) {
+    nav { padding: 0.65rem 0.85rem; }
+    .nav-links { gap: 0.5rem; }
+    .nav-links a:not(.btn-nav) { display: none; }
+    .hero h1 { font-size: 1.65rem; }
+  }
 </style>
 </head>
 <body>

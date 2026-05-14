@@ -118,8 +118,11 @@
 
   /* ── TERMINAL ── */
   .terminal-section {
-    padding: 2rem 2rem 6rem; display: flex; justify-content: center;
+    padding: 2rem 2rem 6rem;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 1rem;
   }
+  .terminal-section > p { margin-bottom: 0 !important; }
   .terminal {
     background: var(--bg-terminal); border: 1px solid var(--border);
     border-radius: 12px; max-width: 720px; width: 100%;
@@ -409,12 +412,44 @@
   /* ── RESPONSIVE ── */
   @media (max-width: 640px) {
     nav { padding: 0.75rem 1rem; }
+    .nav-links { gap: 0.5rem; }
     .nav-links a:not(.btn-nav) { display: none; }
-    .hero { padding: 7rem 1.25rem 3rem; }
+    .hero { padding: 6.5rem 1.25rem 2.5rem; }
     .hero h1 { font-size: 2.2rem; }
-    .terminal-body { font-size: 0.72rem; padding: 1rem; }
+    .hero p { font-size: 1rem; }
+    .hero-cta { width: 100%; flex-direction: column; align-items: stretch; }
+    .hero-cta .btn { width: 100%; text-align: center; }
+    .features, .comparison, .compare-mini, .waitlist, .install,
+    .social-proof, .terminal-section {
+      padding-left: 1.25rem; padding-right: 1.25rem;
+    }
+    .features, .comparison { padding-top: 4rem; padding-bottom: 4rem; }
+    .features h2, .comparison h2, .waitlist h2 { font-size: 1.75rem; }
+    .terminal-section { padding-top: 1rem; padding-bottom: 4rem; }
+    .terminal-body { font-size: 0.68rem; padding: 0.85rem; line-height: 1.6; }
     .feature-grid { grid-template-columns: 1fr; }
+    .feature-card { padding: 1.5rem; }
     .waitlist-form { padding: 1.5rem; }
+    .compare-mini h3 { font-size: 1.1rem; }
+    /* Mini compare table: scroll horizontally instead of squishing */
+    .compare-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .compare-table-wrap .compare-table {
+      border: none; border-radius: 0; min-width: 560px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    nav { padding: 0.65rem 0.85rem; }
+    .hero { padding: 6rem 1rem 2rem; }
+    .hero h1 { font-size: 1.85rem; }
+    .hero-badge { font-size: 0.7rem; padding: 0.3rem 0.75rem; }
+    .install-commands { flex-direction: column; align-items: stretch; }
+    .install-cmd { font-size: 0.78rem; padding: 0.65rem 0.85rem; word-break: break-all; }
   }
 </style>
 </head>
@@ -462,6 +497,7 @@
 <!-- MINI COMPARE -->
 <section class="compare-mini" id="compare-mini">
   <h3>How SafeCut compares to what you already have</h3>
+  <div class="compare-table-wrap">
   <table class="compare-table">
     <thead>
       <tr>
@@ -504,6 +540,7 @@
       </tr>
     </tbody>
   </table>
+  </div>
 </section>
 
 <!-- TERMINAL DEMO -->
@@ -777,7 +814,15 @@ function copyCmd(el, text) {
       phase2.forEach(function(l, i) {
         setTimeout(function() { l.classList.add('visible'); }, pause + i * 90);
       });
-    }, { threshold: 0.3 });
+    }, {
+      // threshold 0 + rootMargin so it triggers as soon as any part of
+      // the terminal scrolls into the viewport. Previously this used
+      // threshold:0.3 which never fired on small screens where the
+      // terminal is taller than the viewport, leaving mobile users
+      // with an empty black box.
+      threshold: 0,
+      rootMargin: '0px 0px -10% 0px',
+    });
 
   observer.observe(demo);
 })();

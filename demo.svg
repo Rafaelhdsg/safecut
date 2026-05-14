@@ -32,12 +32,12 @@
   <circle class="dot-r" cx="20" cy="21" r="6"/>
   <circle class="dot-y" cx="40" cy="21" r="6"/>
   <circle class="dot-g" cx="60" cy="21" r="6"/>
-  <text class="title" x="410" y="25" text-anchor="middle">~/ &#8212; inframind</text>
+  <text class="title" x="410" y="25" text-anchor="middle">~/ &#8212; safecut</text>
 
   <!-- Terminal content -->
   <g transform="translate(24, 70)">
     <!-- Prompt -->
-    <text y="0"><tspan class="cyan">$</tspan> <tspan class="bold">inframind quick-scan</tspan></text>
+    <text y="0"><tspan class="cyan">$</tspan> <tspan class="bold">safecut quick-scan</tspan></text>
 
     <!-- Pipeline Stages -->
     <text y="30"><tspan class="dim">  [DISCOVERY]</tspan>  Scanning Azure resources............. <tspan class="green">Done.</tspan> <tspan class="cyan">14 resources found</tspan></text>
@@ -49,7 +49,7 @@
 
     <!-- Executive Dashboard -->
     <text y="150" class="dim">  +----------------------------------------------------------+</text>
-    <text y="168">  |  <tspan class="cyan bold">INFRAMIND</tspan>  |  <tspan class="bold">RECOVERABLE WASTE FOUND</tspan>                   |</text>
+    <text y="168">  |  <tspan class="cyan bold">SAFECUT</tspan>  |  <tspan class="bold">RECOVERABLE WASTE FOUND</tspan>                   |</text>
     <text y="186" class="dim">  +----------------------------------------------------------+</text>
     <text y="204">  |  <tspan class="bold">ANNUAL SAVINGS</tspan>    <tspan class="green-bold">$1,875 / yr</tspan>                          |</text>
     <text y="222">  |  <tspan class="bold">SAFETY SCORE</tspan>      <tspan class="green-bold">14/14 safe</tspan>  <tspan class="cyan">[HIGH CONFIDENCE]</tspan>    |</text>
@@ -78,12 +78,12 @@
     <text y="540">     &#9492;&#9472; <tspan class="dim">SAVING: </tspan>  <tspan class="green-bold">$2.25/mo</tspan></text>
 
     <!-- INSIGHT -->
-    <text y="570" class="section">  INFRAMIND INSIGHT</text>
+    <text y="570" class="section">  SAFECUT INSIGHT</text>
     <text y="588">  <tspan class="bold">77%</tspan> of your waste comes from <tspan class="cyan bold">public IPs</tspan> &#8212; your cleanup</text>
     <text y="606">  process has a gap. A CI/CD post-deploy hook would eliminate this.</text>
 
     <!-- NEXT -->
     <text y="636" class="dim">  &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</text>
-    <text y="654">  <tspan class="section">NEXT</tspan>  <tspan class="cyan">inframind simulate --dry-run</tspan> <tspan class="dim">preview the full action plan</tspan></text>
+    <text y="654">  <tspan class="section">NEXT</tspan>  <tspan class="cyan">safecut policy simulate</tspan> <tspan class="dim">preview the full action plan</tspan></text>
   </g>
 </svg>

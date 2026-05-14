@@ -16,7 +16,7 @@ Status: done. Captured so we don't regress.
 - `safecut upgrade` renders a 4-tier table with `--start-trial`,
   `--book-demo`, `--partner` flags (see [`cmd/upgrade.go`](../cmd/upgrade.go)).
 - `safecut partner` preview command for the MSP track.
-- [`docs/pricing.html`](pricing.html) page with FAQ and Start-trial CTA.
+- [`docs/pricing.html`](../docs/pricing.html) page with FAQ and Start-trial CTA.
 - `README.md` has a dedicated Pricing section linking to it.
 - RELEASE-CHECKLIST has a new Conversion Gate block.
 
@@ -30,7 +30,7 @@ Target landing window: v1.0.0 final, ~5–7 days after rc1.
 
 1. **Founding customer counter**
    - Replace the static `47 / 100 spots remaining` in
-     [`docs/index.html`](index.html) hero with a real counter fed by a
+     [`docs/index.html`](../docs/index.html) hero with a real counter fed by a
      `/api/founding-count` endpoint (static JSON is fine while signups are
      low).
    - Surface the same counter in `safecut upgrade` when terminal is
@@ -43,7 +43,7 @@ Target landing window: v1.0.0 final, ~5–7 days after rc1.
      consenting installs.
 
 3. **Comparison table v2**
-   - Extend the mini-table in [`docs/index.html`](index.html) with
+   - Extend the mini-table in [`docs/index.html`](../docs/index.html) with
      Infracost Cloud, Vantage, and Azure Advisor columns.
    - Add a dedicated `docs/compare.html` for SEO, one page per
      competitor (Apptio, Cloudability, Finout).

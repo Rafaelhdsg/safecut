@@ -385,7 +385,7 @@ go build -o safecut ./cmd/safecut
 ## Development
 
 - Run tests: `go test ./...`
-- Pre-release checklist (CI, GoReleaser snapshot, Azure smoke): [`docs/RELEASE-CHECKLIST.md`](docs/RELEASE-CHECKLIST.md)
+- Pre-release checklist (CI, GoReleaser snapshot, Azure smoke): [`.github/RELEASE-CHECKLIST.md`](.github/RELEASE-CHECKLIST.md)
 
 ## License
 

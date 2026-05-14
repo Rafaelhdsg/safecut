@@ -1,6 +1,6 @@
 # Pre-release checklist (v1.x tags)
 
-Run this before pushing a version tag (`v*`) so GitHub Actions can run [`.github/workflows/release.yml`](../.github/workflows/release.yml) and GoReleaser cleanly.
+Run this before pushing a version tag (`v*`) so GitHub Actions can run [`workflows/release.yml`](workflows/release.yml) and GoReleaser cleanly.
 
 ## Automated gates (local)
 

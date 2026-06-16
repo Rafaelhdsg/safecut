@@ -1,6 +1,8 @@
 package telemetry
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestSavingsBucket(t *testing.T) {
 	cases := []struct {
@@ -19,6 +21,28 @@ func TestSavingsBucket(t *testing.T) {
 		if got := savingsBucket(c.in); got != c.want {
 			t.Errorf("savingsBucket(%.2f) = %q, want %q", c.in, got, c.want)
 		}
+	}
+}
+
+func TestPostHogAPIKey_envOverridesEmbedded(t *testing.T) {
+	oldEmbedded := embeddedPostHogKey
+	t.Cleanup(func() { embeddedPostHogKey = oldEmbedded })
+
+	embeddedPostHogKey = "phc_embedded"
+	t.Setenv("SAFECUT_POSTHOG_KEY", "phc_from_env")
+	if got := posthogAPIKey(); got != "phc_from_env" {
+		t.Fatalf("posthogAPIKey() = %q, want phc_from_env", got)
+	}
+}
+
+func TestPostHogAPIKey_fallsBackToEmbedded(t *testing.T) {
+	oldEmbedded := embeddedPostHogKey
+	t.Cleanup(func() { embeddedPostHogKey = oldEmbedded })
+
+	embeddedPostHogKey = "phc_embedded"
+	t.Setenv("SAFECUT_POSTHOG_KEY", "")
+	if got := posthogAPIKey(); got != "phc_embedded" {
+		t.Fatalf("posthogAPIKey() = %q, want phc_embedded", got)
 	}
 }
 

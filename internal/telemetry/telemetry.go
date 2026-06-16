@@ -13,7 +13,10 @@ import (
 const posthogEndpoint = "https://us.i.posthog.com"
 
 func posthogAPIKey() string {
-	return os.Getenv("SAFECUT_POSTHOG_KEY")
+	if k := os.Getenv("SAFECUT_POSTHOG_KEY"); k != "" {
+		return k
+	}
+	return embeddedPostHogKey
 }
 
 var (

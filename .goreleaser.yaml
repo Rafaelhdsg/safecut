@@ -24,6 +24,7 @@ builds:
       - -X github.com/Rafaelhdsg/safecut/internal/version.Version={{.Version}}
       - -X github.com/Rafaelhdsg/safecut/internal/version.Commit={{.ShortCommit}}
       - -X github.com/Rafaelhdsg/safecut/internal/version.Date={{.Date}}
+      - -X github.com/Rafaelhdsg/safecut/internal/telemetry.embeddedPostHogKey={{.Env.SAFECUT_POSTHOG_KEY}}
 
 archives:
   - id: default

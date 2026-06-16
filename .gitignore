@@ -31,6 +31,9 @@ go.work.sum
 # .idea/
 # .vscode/
 
+# Local Cursor AI rules (not shared in the repo)
+cursorrules
+
 # Local build artefacts — release binaries come from GoReleaser, not the repo
 /safecut
 /safecut-*

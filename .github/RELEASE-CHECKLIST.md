@@ -74,6 +74,10 @@ real and observable, not just printed text:
 
 - **`GITHUB_TOKEN`** — provided by Actions for the release job. Can
   write to `Rafaelhdsg/safecut` only.
+- **`SAFECUT_POSTHOG_KEY`** — **required** for release telemetry.
+  PostHog **Project API Key** (`phc_…`). GoReleaser embeds it into
+  release binaries via `-ldflags`; without it, end-user installs send no
+  events. Override locally with the same env var when testing a dev build.
 - **`HOMEBREW_TAP_TOKEN`** — **required** for the Homebrew tap push.
   - Must be a dedicated PAT (fine-grained or classic), NOT the default
     `GITHUB_TOKEN` (which has no access to other repositories).

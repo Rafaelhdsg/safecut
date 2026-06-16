@@ -50,33 +50,25 @@ changelog:
       - "^test:"
       - "^ci:"
 
-# NOTE: the `brews:` block requires two preconditions to succeed:
-#   1. The repository Rafaelhdsg/homebrew-tap must already exist and be
-#      public (Homebrew rejects private taps without extra setup).
-#   2. The secret HOMEBREW_TAP_TOKEN on Rafaelhdsg/safecut must be
-#      a PAT (fine-grained or classic) with **Contents: read/write** on
-#      the tap repo. The default ${{ secrets.GITHUB_TOKEN }} cannot
-#      write to other repositories, so a dedicated PAT is required.
-# If the PAT is missing, expired, or under-scoped, the whole release
-# aborts with "401 Bad credentials". Fix the secret, then re-run failed
-# jobs from the GitHub Actions UI (the release tag itself is preserved).
-brews:
-  - repository:
+# Homebrew tap: publishes a Cask (GoReleaser v2.16+; `brews` is deprecated).
+# Requires Rafaelhdsg/homebrew-tap public and HOMEBREW_TAP_TOKEN secret.
+homebrew_casks:
+  - name: safecut
+    repository:
       owner: Rafaelhdsg
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    directory: Formula
     homepage: "https://github.com/Rafaelhdsg/safecut"
     description: "The cuts you'd defend at standup — find idle resources, simulate safely, and stop paying for what you don't use"
     license: "MIT"
-    install: |
-      bin.install "safecut"
-    test: |
-      # Both forms must work: the explicit subcommand (stable API for
-      # scripts/CI) and the cobra --version flag.
-      assert_match "safecut", shell_output("#{bin}/safecut version")
-      system "#{bin}/safecut", "--version"
-      system "#{bin}/safecut", "--help"
+    binaries:
+      - safecut
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/safecut"]
+          end
 
 release:
   github:

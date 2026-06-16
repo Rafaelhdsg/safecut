@@ -100,7 +100,18 @@ Before the first release, create `Rafaelhdsg/homebrew-tap`:
 - Must be **public** (private taps require extra `brew tap` flags).
 - Name must be exactly `homebrew-<something>` (Homebrew convention).
 - Seed it with a README so the default branch exists; GoReleaser writes
-  `Formula/safecut.rb` automatically on each release.
+  `Casks/safecut.rb` automatically on each release (v2.16+; `brews` is
+  deprecated).
+
+After the first Cask release, add `tap_migrations.json` at the tap root
+so `brew upgrade safecut` migrates from the old Formula:
+
+```json
+{ "safecut": "safecut" }
+```
+
+Then remove `Formula/safecut.rb` from the tap (keep `Formula/inframind.rb`
+if still needed for legacy installs).
 
 ## After the tag
 

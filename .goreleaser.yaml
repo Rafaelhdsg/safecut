@@ -92,7 +92,7 @@ release:
 
     ```bash
     # Homebrew
-    brew install Rafaelhdsg/tap/safecut
+    brew install --cask Rafaelhdsg/tap/safecut
 
     # curl (Linux/macOS)
     curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/safecut/main/install.sh | bash

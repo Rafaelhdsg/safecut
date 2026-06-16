@@ -15,7 +15,7 @@ Run `safecut doctor` first if unsure — it validates the credential
 chain and pricing cache before any scan.
 
 ```bash
-brew install Rafaelhdsg/tap/safecut
+brew install --cask Rafaelhdsg/tap/safecut
 ```
 
 or
@@ -368,7 +368,7 @@ safecut/
 
 ```bash
 # Homebrew
-brew install Rafaelhdsg/tap/safecut
+brew install --cask Rafaelhdsg/tap/safecut
 
 # curl
 curl -fsSL https://raw.githubusercontent.com/Rafaelhdsg/safecut/main/install.sh | bash
